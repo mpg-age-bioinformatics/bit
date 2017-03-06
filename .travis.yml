@@ -1,0 +1,9 @@
+language: python
+
+sudo: true
+
+install:
+    - python setup.py install 
+
+script:
+    - echo "TODO"

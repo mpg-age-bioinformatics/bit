@@ -1,4 +1,23 @@
-def check_reqs(requirements,configdic,config_file=None, gitssh=args.gitssh):
+import json
+import time
+import datetime
+import os
+import sys
+import getpass
+from os.path import expanduser
+from subprocess import Popen, PIPE, STDOUT
+import subprocess as sb
+import stat
+import tempfile
+import pwd
+
+from .config import *
+from .git import *
+from .owncloud import *
+from .rsync import *
+
+
+def check_reqs(requirements,configdic,config_file=None, gitssh=None):
     if "owncloud_address" in requirements:
         configdic["owncloud_address"]=get_owncloud_address()
     if "owncloud_upload_folder" in requirements:

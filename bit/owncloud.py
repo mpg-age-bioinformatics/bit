@@ -1,4 +1,22 @@
 import ._owncloud.py as owncloud
+import json
+import time
+import datetime
+import os
+import sys
+import getpass
+from os.path import expanduser
+from subprocess import Popen, PIPE, STDOUT
+import subprocess as sb
+import stat
+import tempfile
+import pwd
+
+from .config import *
+from .git import *
+from .bit import *
+from .rsync import *
+
 
 def list_upload(base_destination,list_of_files):
     upload_dic={}

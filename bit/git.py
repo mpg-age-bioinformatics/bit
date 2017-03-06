@@ -1,4 +1,22 @@
-def git_target(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=args.gitssh,usepw=None):
+import json
+import time
+import datetime
+import os
+import sys
+import getpass
+from os.path import expanduser
+from subprocess import Popen, PIPE, STDOUT
+import subprocess as sb
+import stat
+import tempfile
+import pwd
+
+from .config import *
+from .bit import *
+from .owncloud import *
+from .rsync import *
+
+def git_target(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None,usepw=None):
     url=github_address.split("//")[-1]
     if not args.gitssh:
         git="https://%s:%s@%s/%s/%s.git" %(github_user,github_pass,url,github_organization,github_repo)
@@ -10,7 +28,7 @@ def git_target(github_address,github_organization,github_repo,github_user=None,g
     else:
         return git
 
-def git_clone(local_name,github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=args.gitssh):
+def git_clone(local_name,github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):
     git, git2 =git_target(github_address,github_organization,github_repo,github_user=github_user,github_pass=github_pass,gitssh=gitssh,usepw=True)
     if not os.path.exists(local_name):
         os.makedirs(local_name)
@@ -24,7 +42,7 @@ def git_clone(local_name,github_address,github_organization,github_repo,github_u
     os.chdir(cwd)
     return out
 
-def git_fetch(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=args.gitssh):
+def git_fetch(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):
     git=git_target(github_address,github_organization,github_repo,github_user=github_user,github_pass=github_pass,gitssh=gitssh)
     call=["git","fetch",git]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
@@ -49,7 +67,7 @@ def git_merge(message):
     except:
         pass
 
-def git_pull(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=args.gitssh):
+def git_pull(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):
     git=git_target(github_address,github_organization,github_repo,github_user=github_user,github_pass=github_pass,gitssh=gitssh)
     call=["git","pull",git]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
@@ -87,7 +105,7 @@ def git_commit(message):
     except:
         pass
 
-def git_push(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=args.gitssh):
+def git_push(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):
     git=git_target(github_address,github_organization,github_repo,github_user=github_user,github_pass=github_pass,gitssh=gitssh)
     call=["git","push",git,"--all"]
     if gitssh:
@@ -105,7 +123,7 @@ def git_push(github_address,github_organization,github_repo,github_user=None,git
     except:
         pass
 
-def git_sync(files_to_add,message,github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=args.gitssh):
+def git_sync(files_to_add,message,github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):
     git_add(files_to_add)
     git_commit(message)
     git_fetch(github_address,github_organization,github_repo,github_user=github_user,github_pass=github_pass,gitssh=gitssh)

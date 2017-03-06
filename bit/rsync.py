@@ -1,3 +1,21 @@
+import json
+import time
+import datetime
+import os
+import sys
+import getpass
+from os.path import expanduser
+from subprocess import Popen, PIPE, STDOUT
+import subprocess as sb
+import stat
+import tempfile
+import pwd
+
+from .config import *
+from .git import *
+from .bit import *
+from .owncloud import *
+
 def get_remote_config(sshLogin,remotePass):
     remote_address=sshLogin.split("@")[1]
     call="sshpass -p "+remotePass+" scp "+sshLogin+":~/.bit_config \
