@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(name = 'bit',
       version = '0.0.1',
-      description = '[b]ermuda [i]nformation [t]riangle",
+      description = '[b]ermuda [i]nformation [t]riangle',
       url = 'https://github.com/mpg-age-bioinformatics/bit',
       author = 'Bioinformatics Core Facility of the Max Planck Institute for Biology of Ageing',
       author_email = 'bioinformatics@age.mpg.de',
