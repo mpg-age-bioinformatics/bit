@@ -1,18 +1,8 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-import json
-import time
-import datetime
 import os
-import sys
-import getpass
-from os.path import expanduser
-from subprocess import Popen, PIPE, STDOUT
 import subprocess as sb
-import stat
-import tempfile
-import pwd
 
 def git_target(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None,usepw=None):
     url=github_address.split("//")[-1]
