@@ -16,8 +16,7 @@ import pwd
 
 import bit.config as config
 import bit.git as git
-import bit.bit as bit
-import bit.rsync as rsync
+import bit as bit
 import bit._owncloud as owncloud
 
 
@@ -103,16 +102,16 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
         message=str(message)
 
     configdic=config.read_bitconfig()
-    for r in bit.requirements:
+    for r in config.requirements:
         if not gitssh:
             if r not in ["user_group" ]:
                 while configdic[r] == None:
-                    configdic=bit.check_reqs([r],configdic,config_file=None, \
+                    configdic=config.check_reqs([r],configdic,config_file=None, \
                     gitssh=None)
         else:
             if r not in [ "github_user", "github_pass","user_group" ]:
                 while configdic[r] == None:
-                    configdic=bit.check_reqs([r],configdic,config_file=None, \
+                    configdic=config.check_reqs([r],configdic,config_file=None, \
                     gitssh=gitssh)
 
     local_path=os.path.abspath(configdic["local_path"])
@@ -250,7 +249,7 @@ def ownCloud_download(gitssh=None,pick_a_date=None):
     configdic=config.read_bitconfig()
     for r in downloadreqs:
         while configdic[r] == None:
-            configdic=bit.check_reqs([r],configdic,config_file=None, \
+            configdic=config.check_reqs([r],configdic,config_file=None, \
             gitssh=gitssh)
     local_path=os.path.abspath(configdic["local_path"])
 
@@ -269,8 +268,8 @@ def ownCloud_download(gitssh=None,pick_a_date=None):
         oc=owncloud.Client(configdic["owncloud_address"] )
         oc.login(configdic["owncloud_user"],configdic["owncloud_pass"])
     except:
-        print "Could not login to ownCloud.\nPlease make sure you are giving \
-        the right address to your owncloud and using the right login credentials."
+        print("Could not login to ownCloud.\nPlease make sure you are giving \
+        the right address to your owncloud and using the right login credentials.")
         sys.exit(0)
 
     oc.get_directory_as_zip(base_destination, pick_a_date+".zip")
@@ -282,7 +281,7 @@ def ownCloud_create_folder(gitssh=None,pick_a_date=None,days_to_share=None):
     configdic=config.read_bitconfig()
     for r in downloadreqs:
         while configdic[r] == None:
-            configdic=bit.check_reqs([r],configdic,config_file=None, \
+            configdic=config.check_reqs([r],configdic,config_file=None, \
             gitssh=gitssh)
     local_path=os.path.abspath(configdic["local_path"])
 

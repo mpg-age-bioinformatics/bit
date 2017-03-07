@@ -15,9 +15,6 @@ import tempfile
 import pwd
 
 import bit.config as config
-import bit.git as git
-import bit.bit as bit
-import bit.owncloud as oc
 
 def get_remote_config(sshLogin,remotePass):
     remote_address=sshLogin.split("@")[1]

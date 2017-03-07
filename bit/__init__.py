@@ -17,7 +17,6 @@ import pwd
 
 import bit.config as config
 import bit.git as git
-import bit.bit as bit
 import bit.owncloud as oc
 import bit.rsync as rsync
 
@@ -67,10 +66,10 @@ def main():
     # initate a project
     if args.start:
         configdic=config.read_bitconfig()
-        for r in bit.start_reqs:
+        for r in config.start_reqs:
             if r != "user_group":
                 while configdic[r] == None:
-                    configdic=bit.check_reqs([r],configdic,config_file=None, gitssh=None)
+                    configdic=config.check_reqs([r],configdic,config_file=None, gitssh=None)
         local_path=os.path.abspath(configdic["local_path"])
         full_path=os.path.abspath(args.start)
         project_name=os.path.basename(full_path)
@@ -106,7 +105,7 @@ def main():
         raw_input("\n\n*************\n\nPlease go to %s/%s/%s/wiki and click on 'Create the first page' and then 'Save Page'.\n\nPress Enter once you have saved the first wiki page.\n\n*************\n\n" \
         %(configdic["github_address"],configdic["github_organization"],project_name) )
 
-        bit.init_user(full_path,configdic["github_address"],configdic["github_organization"],\
+        config.init_user(full_path,configdic["github_address"],configdic["github_organization"],\
         project_name,github_user=configdic["github_user"],\
         github_pass=configdic["github_pass"],gitssh=args.gitssh)
 
@@ -135,9 +134,9 @@ def main():
 
     if args.adduser:
         configdic=config.read_bitconfig()
-        for r in bit.start_reqs:
+        for r in config.start_reqs:
             while configdic[r] == None:
-                configdic=bit.check_reqs([r],configdic,config_file=None, gitssh=args.gitssh)
+                configdic=config.check_reqs([r],configdic,config_file=None, gitssh=args.gitssh)
         local_path=os.path.abspath(configdic["local_path"])
         if args.start:
             full_path=os.path.abspath(args.start)
@@ -152,7 +151,7 @@ def main():
             sys.stdout.flush()
             sys.exit(0)
 
-        bit.init_user(full_path,configdic["github_address"],configdic["github_organization"],project_name,github_user=configdic["github_user"],github_pass=configdic["github_pass"],gitssh=args.gitssh)
+        config.init_user(full_path,configdic["github_address"],configdic["github_organization"],project_name,github_user=configdic["github_user"],github_pass=configdic["github_pass"],gitssh=args.gitssh)
         sys.exit(0)
 
     if args.input:
