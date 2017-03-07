@@ -12,7 +12,7 @@ import tempfile
 import pwd
 
 import bit.config as config
-import big.git as git
+import bit.git as git
 import bit.owncloud as oc
 import bit.rsync as rsync
 
