@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import json
 import time
 import datetime
@@ -46,7 +49,7 @@ def git_fetch(github_address,github_organization,github_repo,github_user=None,gi
     git=git_target(github_address,github_organization,github_repo,github_user=github_user,github_pass=github_pass,gitssh=gitssh)
     call=["git","fetch",git]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    print out.communicate()[0].rstrip()
+    print(out.communicate()[0].rstrip())
     out.stdout.close()
     out.stdin.close()
     out.stderr.close()
@@ -58,7 +61,7 @@ def git_fetch(github_address,github_organization,github_repo,github_user=None,gi
 def git_merge(message):
     call=["git","merge","FETCH_HEAD","-m",message]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    print out.communicate()[0].rstrip()
+    print(out.communicate()[0].rstrip())
     out.stdout.close()
     out.stdin.close()
     out.stderr.close()
@@ -71,7 +74,7 @@ def git_pull(github_address,github_organization,github_repo,github_user=None,git
     git=git_target(github_address,github_organization,github_repo,github_user=github_user,github_pass=github_pass,gitssh=gitssh)
     call=["git","pull",git]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    print out.communicate()[0].rstrip()
+    print(out.communicate()[0].rstrip())
     out.stdout.close()
     out.stdin.close()
     out.stderr.close()
@@ -84,7 +87,7 @@ def git_add(files_to_add):
     for f in files_to_add:
         call=["git","add",f]
         out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-        print out.communicate()[0].rstrip()
+        print(out.communicate()[0].rstrip())
         out.stdout.close()
         out.stdin.close()
         out.stderr.close()
@@ -96,7 +99,7 @@ def git_add(files_to_add):
 def git_commit(message):
     call=["git","commit","-m", message]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    print out.communicate()[0].rstrip()
+    print(out.communicate()[0].rstrip())
     out.stdout.close()
     out.stdin.close()
     out.stderr.close()
@@ -110,7 +113,7 @@ def git_push(github_address,github_organization,github_repo,github_user=None,git
     call=["git","push",git,"--all"]
     if gitssh:
         out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-        print out.communicate()[0].rstrip()
+        print(out.communicate()[0].rstrip())
     else:
         FNULL = open(os.devnull, 'w')
         out=Popen(call, stdout=FNULL, stdin=PIPE ,stderr=PIPE) #, stdout=FNULL, stderr=subprocess.STDOUT old: stdout=PIPE, stdin=PIPE, stderr=STDOUT

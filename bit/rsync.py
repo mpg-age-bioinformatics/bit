@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import json
 import time
 import datetime
@@ -25,15 +28,15 @@ def get_remote_config(sshLogin,remotePass):
     if os.path.isfile(uhome+".bit_config.%s" %remote_address) :
         os.chmod(uhome+".bit_config.%s" %remote_address, stat.S_IRWXU )
     else:
-        print "Could not find ~/.bit_config on remote server.\nPlease run \
-        'bit --config' on remote server."
+        print("Could not find ~/.bit_config on remote server.\nPlease run \
+        'bit --config' on remote server.")
         sys.exit(0)
 
 def read_remote_config(sshLogin,remotePass,forceImport=None):
     remote_address=sshLogin.split("@")[1]
     if os.path.isfile(".bit_config.%s" %remote_address):
         if not forceImport:
-            print "Using previously collected remote config."
+            print("Using previously collected remote config.")
         else:
             get_remote_config(sshLogin,remotePass)
     else:
@@ -57,9 +60,9 @@ def list_local_sync(base_destination,list_of_files):
         check_project.append(f.split("/")[size_local+1])
     check_project=list(set(check_project))
     if len(check_project) > 1:
-        print "Found more than one project:\n"
+        print("Found more than one project:\n")
         for p in check_project:
-            print p
+            print(p)
             sys.stdout.flush()
         sys.exit(0)
     else:
@@ -104,8 +107,8 @@ def list_local_sync(base_destination,list_of_files):
             else:
                 upload_dic[full]=base_destination+"/"+os.path.basename(full)
         else:
-            print "%s is either a link to %s or is not on your projects path. This file\
-            will not be syncronized." %(f, full)
+            print("%s is either a link to %s or is not on your projects path. This file\
+            will not be syncronized." %(f, full))
             sys.stdout.flush()
 
     subfolders=list(set(subfolders))
@@ -128,9 +131,9 @@ def list_local_for_remote_sync(base_destination,list_of_files):
         check_project.append(f.split("/")[size_local+1])
     check_project=list(set(check_project))
     if len(check_project) > 1:
-        print "Found more than one project:\n"
+        print("Found more than one project:\n")
         for p in check_project:
-            print p
+            print(p)
             sys.stdout.flush()
         sys.exit(0)
     else:
@@ -161,8 +164,8 @@ def list_local_for_remote_sync(base_destination,list_of_files):
             else:
                 upload_dic[full]=base_destination+"/"+os.path.basename(full)
         else:
-            print "%s is either a link to %s or is not on your projects path. This file\
-            will not be syncronized." %(f, full)
+            print("%s is either a link to %s or is not on your projects path. This file\
+            will not be syncronized." %(f, full))
             sys.stdout.flush()
 
     subfolders=list(set(subfolders))
@@ -274,7 +277,7 @@ def rsync_from(sshLogin,rsync_files,forceImport=None,sync_to=False,sync_from=Tru
     res=list(set(res))
 
     showres="\n".join(res)
-    print "The following targets could be found on the remote server:\n%s" %showres
+    print("The following targets could be found on the remote server:\n%s" %showres)
     sys.stdout.flush()
 
     inv_sync_dic={}
@@ -294,10 +297,10 @@ def rsync_from(sshLogin,rsync_files,forceImport=None,sync_to=False,sync_from=Tru
                         for use in user_group:
                             call=["setfacl","-m","user:%s:rwx" %use,ltf]
                             out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-                            print out.communicate()[0].rstrip()
+                            print(out.communicate()[0].rstrip())
 
                     except:
-                        print "Failed to setfacls."
+                        print("Failed to setfacls.")
                         sys.stdout.flush()
                 local_path_owner=os.stat(local_path)
                 local_path_owner=local_path_owner.st_uid

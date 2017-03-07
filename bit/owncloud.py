@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import json
 import time
 import datetime
@@ -61,16 +64,16 @@ def get_ownCloud_links(link_info,http):
     store=store.split("/")
     store="%2F".join(store)
     link=link_info.split("url=")[1].split(",")[0]
-    print "\nYour link:\n%s" %http+"/index.php/apps/files?dir="+store
-    print "Public link:\n%s\n" %link
+    print("\nYour link:\n%s" %http+"/index.php/apps/files?dir="+store)
+    print("Public link:\n%s\n" %link)
     return http+"/index.php/apps/files?dir="+store
 
 def get_owncloud_base_folder(configdic,project_name,getfolder=None,pick_a_date=None,create_folder=None,subfolder=None):
 
     if getfolder:
         if not pick_a_date:
-            print "--getfolder implies --pick_a_date.\nPlease use -d in \
-            combination with -g.\nThank you!"
+            print("--getfolder implies --pick_a_date.\nPlease use -d in \
+            combination with -g.\nThank you!")
             sys.exit()
         else:
             base_folder=configdic["owncloud_download_folder"]
@@ -124,9 +127,9 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
         check_project.append(f.split("/")[size_local+1])
     check_project=list(set(check_project))
     if len(check_project) > 1:
-        print "Found more than one project:\n"
+        print("Found more than one project:\n")
         for p in check_project:
-            print p
+            print(p)
             sys.stdout.flush()
         sys.exit(0)
     else:
@@ -144,8 +147,8 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
         oc=owncloud.Client(configdic["owncloud_address"])
         oc.login(configdic["owncloud_user"],configdic["owncloud_pass"])
     except:
-        print "Could not login to ownCloud.\nPlease make sure you are giving \
-        the right address to your owncloud and using the right login credentials."
+        print("Could not login to ownCloud.\nPlease make sure you are giving \
+        the right address to your owncloud and using the right login credentials.")
         sys.exit(0)
 
     # create required subfolders in ownCloud
@@ -157,10 +160,10 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
 
     # Upload files
     if len(upload_dic)>1:
-        print "Uploading %s files.." %str(len(upload_dic))
+        print("Uploading %s files.." %str(len(upload_dic)))
         sys.stdout.flush()
     else:
-        print "Uploading %s file.." %str(len(upload_dic))
+        print("Uploading %s file.." %str(len(upload_dic)))
         sys.stdout.flush()
 
     skipped_files=[]
@@ -171,19 +174,19 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
         file_handle.seek(0)
         if size == 0:
             skipped_files.append(os.path.basename(f))
-            print "\t%s is empty. Skipping .. " %str(f)
+            print("\t%s is empty. Skipping .. " %str(f))
             sys.stdout.flush()
             continue
         if size > 1879048192:
-            print "\t%s\t(chunked)" %str(upload_dic[f])
+            print("\t%s\t(chunked)" %str(upload_dic[f]))
             sys.stdout.flush()
             oc.put_file(upload_dic[f],f)
         else:
-            print "\t%s" %str(upload_dic[f])
+            print("\t%s" %str(upload_dic[f]))
             sys.stdout.flush()
             oc.put_file(upload_dic[f],f,chunked=False)
 
-    print "Finished uploading."
+    print("Finished uploading.")
     # Time stamp for expiration date
     tshare = datetime.date.today()
     tshare = tshare + datetime.timedelta(days=int(days_to_share))
@@ -195,7 +198,7 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
     oc.logout()
 
     # Go to wiki folder and make a git sync
-    print "Logging changes.."
+    print("Logging changes..")
     sys.stdout.flush()
     user_name=getpass.getuser()
     os.chdir(local_path+"/"+target_project+"/wiki."+user_name)
@@ -229,7 +232,7 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
     github_pass=configdic["github_pass"],gitssh=gitssh)
 
     if scripts:
-        print "Syncronizing your code.."
+        print("Syncronizing your code..")
         sys.stdout.flush()
         os.chdir(local_path+"/"+target_project+"/scripts."+user_name)
         #files_to_add=os.listdir(local_path+"/"+target_project+"/scripts."+user_name)
@@ -272,7 +275,7 @@ def ownCloud_download(gitssh=None,pick_a_date=None):
 
     oc.get_directory_as_zip(base_destination, pick_a_date+".zip")
     oc.logout()
-    print "Downloaded %s.zip" %pick_a_date
+    print("Downloaded %s.zip" %pick_a_date)
     sys.stdout.flush()
 
 def ownCloud_create_folder(gitssh=None,pick_a_date=None,days_to_share=None):
@@ -298,15 +301,15 @@ def ownCloud_create_folder(gitssh=None,pick_a_date=None,days_to_share=None):
         oc=owncloud.Client(configdic["owncloud_address"] )
         oc.login(configdic["owncloud_user"],configdic["owncloud_pass"])
     except:
-        print "Could not login to ownCloud.\nPlease make sure you are giving \
-        the right address to your owncloud and using the right login credentials."
+        print("Could not login to ownCloud.\nPlease make sure you are giving \
+        the right address to your owncloud and using the right login credentials.")
         sys.exit(0)
 
     check=base_destination.split("/")
-    print check
+    print(check)
     for i in range(len(check)+1):
         c="/".join(check[:i])
-        print c
+        print(c)
         try:
             oc.file_info(c)
         except:
