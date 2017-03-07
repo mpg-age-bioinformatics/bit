@@ -14,10 +14,10 @@ import stat
 import tempfile
 import pwd
 
-import config
-import bit
-import owncloud as oc
-import rsync
+import bit.config as config
+import bit.bit as bit
+import bit.owncloud as oc
+import bit.rsync as rsync
 
 def git_target(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None,usepw=None):
     url=github_address.split("//")[-1]
