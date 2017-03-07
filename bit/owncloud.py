@@ -60,7 +60,7 @@ def get_ownCloud_links(link_info,http):
     store=link_info.split("path=")[1].split(",")[0]
     store=store.split("/")
     store="%2F".join(store)
-    link=link_info.split("link=")[1].split(",")[0]
+    link=link_info.split("url=")[1].split(",")[0]
     print "\nYour link:\n%s" %http+"/index.php/apps/files?dir="+store
     print "Public link:\n%s\n" %link
     return http+"/index.php/apps/files?dir="+store
