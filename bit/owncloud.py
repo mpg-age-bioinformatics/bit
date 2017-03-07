@@ -1,4 +1,3 @@
-import ._owncloud.py as owncloud
 import json
 import time
 import datetime
@@ -16,6 +15,7 @@ from .config import *
 from .git import *
 from .bit import *
 from .rsync import *
+import _owncloud as owncloud
 
 
 def list_upload(base_destination,list_of_files):
@@ -91,7 +91,7 @@ def get_owncloud_base_folder(configdic,project_name,getfolder=None,pick_a_date=N
 
     return base_destination
 
-def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None,message=None,scripts=None):
+def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None,scripts=None):
 
     if type(message) == list:
         message=[ str(xx) for xx in message ]

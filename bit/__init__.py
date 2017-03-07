@@ -1,5 +1,24 @@
 #!/usr/bin/env python
 
+import json
+import time
+import datetime
+import os
+import sys
+import getpass
+from os.path import expanduser
+from subprocess import Popen, PIPE, STDOUT
+import subprocess as sb
+import stat
+import tempfile
+import pwd
+
+from .config import *
+from .git import *
+from .bit import *
+from .owncloud import *
+from .rsync import *
+
 def main():
 
     import argparse
@@ -27,25 +46,6 @@ def main():
     parser.add_argument("--gitssh", help="Use your git SSH keys.",  action="store_true")
     parser.add_argument("--config", help="Generate a config file.", action="store_true")
     args = parser.parse_args()
-
-    import json
-    import time
-    import datetime
-    import os
-    import sys
-    import getpass
-    from os.path import expanduser
-    from subprocess import Popen, PIPE, STDOUT
-    import subprocess as sb
-    import stat
-    import tempfile
-    import pwd
-
-    from .config import *
-    from .git import *
-    from .bit import *
-    from .owncloud import *
-    from .rsync import *
 
     if args.sync:
         if args.sync_to:
@@ -157,7 +157,7 @@ def main():
         if not args.message:
             print "ERROR\nYou need to use -m to leave a message in the logs."
             sys.exit()
-        ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None,message=None,scripts=None)
+        ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None,scripts=None)
         sys.exit(0)
 
     if args.create_folder:
