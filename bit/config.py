@@ -14,10 +14,10 @@ import stat
 import tempfile
 import pwd
 
-import git
-import bit
-import owncloud as oc
-import rsync
+import big.git as git
+import bit.bit as bit
+import bit.owncloud as oc
+import bit.rsync as rsync
 
 structure="\n\
 /file_system_a\n\
