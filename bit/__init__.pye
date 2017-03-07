@@ -52,7 +52,7 @@ def main():
             rsync.rsync_to(args.sync_to, args.sync, forceImport=args.forceRemote, \
             sync_to=True, sync_from=False)
         elif args.sync_from:
-            rsync.rsync_from(args.sync_from, args.sync, forceImport=args.forceRemote, \
+            rsync_from(args.sync_from, args.sync, forceImport=args.forceRemote, \
             sync_to=False, sync_from=True)
 
 
