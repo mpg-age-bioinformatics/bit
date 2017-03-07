@@ -100,7 +100,7 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
         message=str(message)
 
     configdic=config.read_bitconfig()
-    for r in requirements:
+    for r in bit.requirements:
         if not gitssh:
             if r not in ["user_group" ]:
                 while configdic[r] == None:
