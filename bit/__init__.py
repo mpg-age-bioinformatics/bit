@@ -115,7 +115,7 @@ def main():
 
         if configdic["user_group"]:
             os.chmod(full_path, stat.S_IRWXU)
-            user_group=configdic["user_group"]
+            user_group=configdic["user_group"].split(",")
             try:
                 for use in user_group:
                     call=["setfacl","-m","user:%s:rwx" %use,full_path]
