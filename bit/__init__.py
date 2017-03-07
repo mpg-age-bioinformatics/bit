@@ -16,7 +16,7 @@ import pwd
 import config
 import git
 import bit
-import owncloud
+import owncloud as oc
 import rsync
 
 def main():

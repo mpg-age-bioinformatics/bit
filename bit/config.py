@@ -13,7 +13,7 @@ import pwd
 
 import git
 import bit
-import owncloud
+import owncloud as oc
 import rsync
 
 structure="\n\

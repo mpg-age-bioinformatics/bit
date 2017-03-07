@@ -11,7 +11,7 @@ import stat
 import tempfile
 import pwd
 
-import config*
+import config
 import git
 import owncloud
 import rsync

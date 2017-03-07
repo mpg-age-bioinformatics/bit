@@ -14,7 +14,7 @@ import pwd
 import config
 import git
 import bit
-import owncloud
+import owncloud as oc
 
 def get_remote_config(sshLogin,remotePass):
     remote_address=sshLogin.split("@")[1]

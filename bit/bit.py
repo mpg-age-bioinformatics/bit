@@ -13,7 +13,7 @@ import pwd
 
 import config
 import git
-import owncloud
+import owncloud as oc
 import rsync
 
 

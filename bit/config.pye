@@ -112,7 +112,7 @@ def get_github_api(github_address):
         github_api=github_address+"/api/v3/orgs/"
     return github_api
 
-def make_bitconfig(require_func=requirements,special_reqs=special_reqs):
+def make_bitconfig(require_func=bit.requirements,special_reqs=bit.special_reqs):
     configdic={}
     configdic=bit.check_reqs(require_func,configdic,config_file=True, gitssh=None)
     uhome=expanduser("~")+"/"

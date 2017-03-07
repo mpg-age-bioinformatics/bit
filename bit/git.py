@@ -13,7 +13,7 @@ import pwd
 
 import config
 import bit
-import owncloud
+import owncloud as oc
 import rsync
 
 def git_target(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None,usepw=None):

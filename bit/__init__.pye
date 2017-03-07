@@ -13,7 +13,7 @@ import stat
 import tempfile
 import pwd
 
-import config*
+import config
 import git
 import bit
 import owncloud
@@ -65,7 +65,7 @@ def main():
     # initate a project
     if args.start:
         configdic=config.read_bitconfig()
-        for r in start_reqs:
+        for r in bit.start_reqs:
             if r != "user_group":
                 while configdic[r] == None:
                     configdic=bit.check_reqs([r],configdic,config_file=None, gitssh=None)
@@ -133,7 +133,7 @@ def main():
 
     if args.adduser:
         configdic=config.read_bitconfig()
-        for r in start_reqs:
+        for r in bit.start_reqs:
             while configdic[r] == None:
                 configdic=bit.check_reqs([r],configdic,config_file=None, gitssh=args.gitssh)
         local_path=os.path.abspath(configdic["local_path"])
