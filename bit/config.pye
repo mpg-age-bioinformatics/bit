@@ -11,10 +11,10 @@ import stat
 import tempfile
 import pwd
 
-from .git import *
-from .bit import *
-from .owncloud import *
-from .rsync import *
+import git
+import bit
+import owncloud
+import rsync
 
 structure="\n\
 /file_system_a\n\

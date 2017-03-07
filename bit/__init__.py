@@ -13,11 +13,11 @@ import stat
 import tempfile
 import pwd
 
-from .config import *
-from .git import *
-from .bit import *
-from .owncloud import *
-from .rsync import *
+import config
+import git
+import bit
+import owncloud
+import rsync
 
 def main():
 

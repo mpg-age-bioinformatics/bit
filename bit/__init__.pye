@@ -13,11 +13,11 @@ import stat
 import tempfile
 import pwd
 
-from .config import *
-from .git import *
-from .bit import *
-from .owncloud import *
-from .rsync import *
+import config*
+import git
+import bit
+import owncloud
+import rsync
 
 def main():
 
@@ -52,7 +52,7 @@ def main():
             rsync.rsync_to(args.sync_to, args.sync, forceImport=args.forceRemote, \
             sync_to=True, sync_from=False)
         elif args.sync_from:
-            rsync_from(args.sync_from, args.sync, forceImport=args.forceRemote, \
+            rsync.rsync_from(args.sync_from, args.sync, forceImport=args.forceRemote, \
             sync_to=False, sync_from=True)
 
 

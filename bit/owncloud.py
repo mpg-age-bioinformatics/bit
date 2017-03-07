@@ -11,10 +11,10 @@ import stat
 import tempfile
 import pwd
 
-from .config import *
-from .git import *
-from .bit import *
-from .rsync import *
+import config
+import git
+import bit
+import rsync
 import _owncloud as owncloud
 
 
