@@ -15,11 +15,11 @@ import stat
 import tempfile
 import pwd
 
-import config
-import git
-import bit
-import owncloud as oc
-import rsync
+import bit.config as config
+import big.git as git
+import bit.bit as bit
+import bit.owncloud as oc
+import bit.rsync as rsync
 
 def main():
 
