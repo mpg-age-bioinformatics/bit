@@ -264,7 +264,7 @@ def ownCloud_download(gitssh=None,pick_a_date=None):
 
     target_project=parent_folder+"/"+project_name
 
-    base_destination=get_owncloud_base_folder(configdic,target_project)
+    base_destination=get_owncloud_base_folder(configdic,target_project,getfolder=True)
 
     # login to owncloud
     try:
@@ -296,7 +296,7 @@ def ownCloud_create_folder(gitssh=None,pick_a_date=None,days_to_share=None):
 
     target_project=parent_folder+"/"+project_name
 
-    base_destination=get_owncloud_base_folder(configdic,target_project)
+    base_destination=get_owncloud_base_folder(configdic,target_project,create_folder=True)
 
     # login to owncloud
     try:

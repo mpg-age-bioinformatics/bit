@@ -26,7 +26,7 @@ def main():
     parser.add_argument("-m", "--message",nargs='*', help="Message to write on log file.", default=None)
     parser.add_argument("-d", "--pick_a_date", help="Pick an existing date folder to transfer data to/from. Format=YYYY-MM-DD", default=None)
     parser.add_argument("-c", "--create_folder", help="Create dropbox folder for user to upload data.", action="store_true")
-    parser.add_argument("-g", "--getfolder", help="Downloads a folder as zip file. Requires --pick_a_date. Defaults --base_folder=upload:download to download", action="store_true")
+    parser.add_argument("-g", "--getfolder", help="Downloads a folder as zip file. Requires --pick_a_date. Defaults base_folder=upload:download to download", action="store_true")
     parser.add_argument("-t", "--days_to_share", help="Number of days you wish to share this folder further.", default=21)
     parser.add_argument("--issue", help="Issue to comment on with --message and owncloud data links", default=None)
     parser.add_argument("--scripts",help="Needs -i and -m. Simultaneously sync the scripts.user folder when uploading data.", action="store_true")
