@@ -67,9 +67,7 @@ bit -i file.tar.bz2 -m my first upload
 #### Installation
 
 ```bash
-git clone https://github.com/mpg-age-bioinformatics/bit
-cd bit
-python setup.py install --user
+pip install https://github.com/mpg-age-bioinformatics/bit/archive/bit-0.0.1.tar.gz
 ```
 
 ###### Dependencies

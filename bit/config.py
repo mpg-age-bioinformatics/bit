@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import json
 import time
 import datetime
@@ -120,16 +123,16 @@ def make_bitconfig(require_func=bit.requirements,special_reqs=bit.special_reqs):
     with open(uhome+".bit_config", 'w') as configfile:
         json.dump(configdic, configfile)
     os.chmod(uhome+".bit_config", stat.S_IRWXU )
-    print "Your bit config file as been generated:"
+    print("Your bit config file as been generated:")
     for c in configdic:
         if "pass" not in c:
-            print c, configdic.get(c)
+            print( c, configdic.get(c) )
             sys.stdout.flush()
         elif configdic.get(c) == None:
-            print c, configdic.get(c)
+            print(c, configdic.get(c) )
             sys.stdout.flush()
         else:
-            print c, "*"
+            print(c, "*")
             sys.stdout.flush()
 
 def read_bitconfig(showit=None,bit_config=".bit_config"):
@@ -139,12 +142,12 @@ def read_bitconfig(showit=None,bit_config=".bit_config"):
     if showit:
         for c in configdic:
             if "pass" not in c:
-                print c, configdic.get(c)
+                print(c, configdic.get(c))
                 sys.stdout.flush()
             elif configdic.get(c) == None:
-                print c, configdic.get(c)
+                print(c, configdic.get(c))
                 sys.stdout.flush()
             else:
-                print c, "*"
+                print(c, "*")
                 sys.stdout.flush()
     return configdic

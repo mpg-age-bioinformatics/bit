@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import json
 import time
 import datetime
@@ -57,7 +59,7 @@ def main():
 
 
     if args.config:
-        print "Setting up your config file."
+        print("Setting up your config file.")
         sys.stdout.flush()
         config.make_bitconfig()
         sys.exit(0)
@@ -76,8 +78,8 @@ def main():
         # check format projects_folder/group_head/project_name
         checkf=len(local_path.split("/"))
         if len(full_path.split("/")) != len(local_path.split("/"))+2:
-            print "The path (%s) to this project does not obey the structure and/or defined local path (%s). Check the reference structure:\n%s" \
-            %(full_path,local_path,structure)
+            print("The path (%s) to this project does not obey the structure and/or defined local path (%s). Check the reference structure:\n%s" \
+            %(full_path,local_path,structure) )
             sys.stdout.flush()
             sys.exit(0)
 
@@ -97,7 +99,7 @@ def main():
         "auto_init": true }']
 
         p = Popen(create_call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-        print p.communicate()[0].rstrip()
+        print(p.communicate()[0].rstrip())
         sys.stdout.flush()
 
         # clone the repo and the wiki by initiating this user
@@ -120,9 +122,9 @@ def main():
                 for use in user_group:
                     call=["setfacl","-m","user:%s:rwx" %use,full_path]
                     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-                    print out.communicate()[0].rstrip()
+                    print(out.communicate()[0].rstrip())
             except:
-                print "Failed to setfacls."
+                print("Failed to setfacls.")
                 sys.stdout.flush()
 
         local_path_owner=os.stat(local_path)
@@ -146,7 +148,7 @@ def main():
         # check format projects_folder/group_head/project_name
         checkf=len(local_path.split("/"))
         if len(full_path.split("/")) != len(local_path.split("/"))+2:
-            print "The path (%s) to this project does not obey the structure and/or defined local path (%s). Check the reference structure:\n%s" %(full_path,local_path,structure)
+            print("The path (%s) to this project does not obey the structure and/or defined local path (%s). Check the reference structure:\n%s" %(full_path,local_path,structure))
             sys.stdout.flush()
             sys.exit(0)
 
@@ -155,7 +157,7 @@ def main():
 
     if args.input:
         if not args.message:
-            print "ERROR\nYou need to use -m to leave a message in the logs."
+            print("ERROR\nYou need to use -m to leave a message in the logs.")
             sys.exit()
         oc.ownCloud_upload(input_files=args.input,message=args.message,gitssh=args.gitssh,days_to_share=args.days_to_share,scripts=args.scripts)
         sys.exit(0)
@@ -166,7 +168,7 @@ def main():
 
     if args.getfolder:
         if args.pick_a_date == None:
-            print "--getfolder implies --pick_a_date.\nPlease use -d in combination with -g.\nThank you!"
+            print("--getfolder implies --pick_a_date.\nPlease use -d in combination with -g.\nThank you!")
             sys.exit(0)
         oc.ownCloud_download(gitssh=args.gitssh,pick_a_date=args.pick_a_date)
         sys.exit(0)
