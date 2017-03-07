@@ -18,7 +18,7 @@ from .rsync import *
 
 def git_target(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None,usepw=None):
     url=github_address.split("//")[-1]
-    if not args.gitssh:
+    if not gitssh:
         git="https://%s:%s@%s/%s/%s.git" %(github_user,github_pass,url,github_organization,github_repo)
     else:
         git="git@%s:%s/%s.git" %(url,github_organization,github_repo)

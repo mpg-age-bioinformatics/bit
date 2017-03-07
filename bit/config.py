@@ -75,7 +75,7 @@ def get_github_organization():
     github_organization=str(raw_input("Your GitHub organization name (eg. mpg-age-bioinformatics for https://github.com/mpg-age-bioinformatics): ")) or None
     return github_organization
 
-def get_github_user(config_file=None,gitssh=args.gitssh):
+def get_github_user(config_file=None,gitssh=None):
     if not gitssh:
         if config_file:
             github_user=str(raw_input("Please give in your user name for your github server or press Enter if you do not want to save this information on the config file: ")) or None
@@ -85,7 +85,7 @@ def get_github_user(config_file=None,gitssh=args.gitssh):
         github_user=None
     return github_user
 
-def get_github_pass(config_file=None,gitssh=args.gitssh):
+def get_github_pass(config_file=None,gitssh=None):
     if not gitssh:
         if config_file:
             github_pass=str(getpass.getpass(prompt="Please give in your password for your github server or press Enter if you do not want to save this information on the config file: ")) or None
