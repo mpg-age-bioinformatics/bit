@@ -85,7 +85,7 @@ def get_owncloud_base_folder(configdic,project_name,getfolder=None,pick_a_date=N
 
     return base_destination
 
-def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None,scripts=None):
+def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None,scripts=None,issue=None):
 
     if type(message) == list:
         message=[ str(xx) for xx in message ]
@@ -232,6 +232,17 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
         configdic["github_organization"],project_name,\
         github_user=configdic["github_user"],\
         github_pass=configdic["github_pass"],gitssh=gitssh)
+
+    if issue:
+        for r not in [ "github_user", "github_pass"]:
+            while configdic[r] == None:
+                configdic=config.check_reqs([r],configdic,config_file=None, \
+                gitssh=None)
+        issueMSG="Public link: %s\n\nPrivate link: %s\n\nCommit message: %s" \
+        %(link_info, private_link,message)
+        git_write_comment(message,configdic["github_address"],\
+        configdic["github_organization"],target_project,str(issue),\
+        github_user=configdic["github_user"],github_pass=configdic["github_pass"])
 
 downloadreqs=["owncloud_address","owncloud_upload_folder",\
 "owncloud_download_folder","owncloud_user",\

@@ -28,6 +28,7 @@ def main():
     parser.add_argument("-c", "--create_folder", help="Create dropbox folder for user to upload data.", action="store_true")
     parser.add_argument("-g", "--getfolder", help="Downloads a folder as zip file. Requires --pick_a_date. Defaults --base_folder=upload:download to download", action="store_true")
     parser.add_argument("-t", "--days_to_share", help="Number of days you wish to share this folder further.", default=21)
+    parser.add_argument("--issue", help="Issue to comment on with --message and owncloud data links", default=None)
     parser.add_argument("--scripts",help="Needs -i and -m. Simultaneously sync the scripts.user folder when uploading data.", action="store_true")
     parser.add_argument("--start", help="Project name of the format. PI_PROJECT_NAME. Initiates a project. This will create the required local folders and respective git repositories.", default=None)
     parser.add_argument("--stdfolders",nargs='*', help="Folders to be created in addition to scripts.user and and wiki.user when a project is started.", default=["tmp","slurm_logs"])
@@ -150,7 +151,7 @@ def main():
         if not args.message:
             print("ERROR\nYou need to use -m to leave a message in the logs.")
             sys.exit()
-        oc.ownCloud_upload(input_files=args.input,message=args.message,gitssh=args.gitssh,days_to_share=args.days_to_share,scripts=args.scripts)
+        oc.ownCloud_upload(input_files=args.input,message=args.message,gitssh=args.gitssh,days_to_share=args.days_to_share,scripts=args.scripts,issue=args.issue)
         sys.exit(0)
 
     if args.create_folder:
