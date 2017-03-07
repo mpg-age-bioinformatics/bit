@@ -157,18 +157,18 @@ def main():
         if not args.message:
             print "ERROR\nYou need to use -m to leave a message in the logs."
             sys.exit()
-        oc.ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None,scripts=None)
+        oc.ownCloud_upload(input_files=args.input,message=args.message,gitssh=args.gitssh,days_to_share=args.days_to_share,scripts=args.scripts)
         sys.exit(0)
 
     if args.create_folder:
-        oc.ownCloud_create_folder(gitssh=None,pick_a_date=None,days_to_share=None)
+        oc.ownCloud_create_folder(gitssh=args.gitssh,pick_a_date=args.pick_a_date,days_to_share=args.days_to_share)
         sys.exit(0)
 
     if args.getfolder:
         if args.pick_a_date == None:
             print "--getfolder implies --pick_a_date.\nPlease use -d in combination with -g.\nThank you!"
             sys.exit(0)
-        oc.ownCloud_download(gitssh=None,pick_a_date=None)
+        oc.ownCloud_download(gitssh=args.gitssh,pick_a_date=args.pick_a_date)
         sys.exit(0)
 
     sys.exit(0)
