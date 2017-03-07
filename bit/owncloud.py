@@ -322,7 +322,7 @@ def ownCloud_create_folder(gitssh=None,pick_a_date=None,days_to_share=None):
     tshare = tshare + datetime.timedelta(days=int(days_to_share))
     tshare = time.mktime(tshare.timetuple())
 
-    link_info = oc.share_file_with_link(base_destination,expiration=tshare)
+    link_info = oc.share_file_with_link(base_destination,expiration=tshare,public_upload=True)
     private_link=get_ownCloud_links(link_info,configdic["owncloud_address"])
 
     oc.logout()
