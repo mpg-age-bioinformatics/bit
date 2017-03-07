@@ -234,14 +234,14 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
         github_pass=configdic["github_pass"],gitssh=gitssh)
 
     if issue:
-        for r not in [ "github_user", "github_pass"]:
+        for r in [ "github_user", "github_pass"]:
             while configdic[r] == None:
                 configdic=config.check_reqs([r],configdic,config_file=None, \
                 gitssh=None)
         issueMSG="Public link: %s\n\nPrivate link: %s\n\nCommit message: %s" \
         %(link_info, private_link,message)
-        git_write_comment(message,configdic["github_address"],\
-        configdic["github_organization"],target_project,str(issue),\
+        git.git_write_comment(message,config.get_github_api(configdic["github_address"]),\
+        configdic["github_organization"],project_name,str(issue),\
         github_user=configdic["github_user"],github_pass=configdic["github_pass"])
 
 downloadreqs=["owncloud_address","owncloud_upload_folder",\

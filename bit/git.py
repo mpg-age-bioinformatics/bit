@@ -2,10 +2,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 import os
+import sys
 import subprocess as sb
 from subprocess import Popen, PIPE, STDOUT
-
-import bit.config as config
 
 def git_target(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None,usepw=None):
     url=github_address.split("//")[-1]
@@ -121,17 +120,25 @@ def git_sync(files_to_add,message,github_address,github_organization,github_repo
     git_merge(message)
     git_push(github_address,github_organization,github_repo,github_user=github_user,github_pass=github_pass,gitssh=gitssh)
 
-def git_write_comment(message,github_address,github_organization,github_repo,issue,github_user=None,github_pass=None):
-    github_api=config.get_github_api(configdic["github_address"])
-    github_api=github_api+"repos/"+github_organization+"/"+github_repo+"/issues/"+issue+"/comments"
+def git_write_comment(message,github_api,github_organization,github_repo,issue,github_user=None,github_pass=None):
+    github_api=github_api.split("orgs/")[0]+"repos/"+github_organization+"/"+github_repo+"/issues/"+issue+"/comments"
     create_call=["curl","-u",github_user+":"+github_pass\
-    ,github_api,"-d",'{"body":"'+message+'"'}']
-    out=Popen(create_call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-    print(out.communicate()[0].rstrip())
-    sys.stdout.flush()
-    out.stdout.close()
-    out.stdin.close()
-    out.stderr.close()
+    ,github_api,"-d",'{"body":"'+message+'"}']
+    out=Popen(create_call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
+    #print(out.communicate()[0].rstrip())
+    #sys.stdout.flush()
+    try:
+		out.stdout.close()
+    except:
+		pass
+    try:
+        out.stdin.close()
+    except:
+		pass
+    try:
+        out.stderr.close()
+    except:
+        pass
     try:
         out.kill()
     except:
