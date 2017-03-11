@@ -124,8 +124,11 @@ def git_write_comment(message,github_api,github_organization,github_repo,issue,g
     github_api=github_api.split("orgs/")[0]+"repos/"+github_organization+"/"+github_repo+"/issues/"+issue+"/comments"
     create_call=["curl","-u",github_user+":"+github_pass\
     ,github_api,"-d",'{"body":"'+message+'"}']
+    print(" ".join(create_call) )
     out=Popen(create_call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    #print(out.communicate()[0].rstrip())
+    import time
+    time.sleep(2)
+	#print(out.communicate()[0].rstrip())
     #sys.stdout.flush()
     try:
 		out.stdout.close()

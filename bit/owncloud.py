@@ -238,9 +238,10 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
             while configdic[r] == None:
                 configdic=config.check_reqs([r],configdic,config_file=None, \
                 gitssh=None)
-        issueMSG="Public link: %s\n\nPrivate link: %s\n\nCommit message: %s" \
-        %(link_info, private_link,message)
-        git.git_write_comment(message,config.get_github_api(configdic["github_address"]),\
+        publink=str(link_info).split("url=")[1].split(",")[0]
+        issueMSG="Public link: %s; Private link: %s; Commit message: %s" \
+        %(publink, private_link,message)
+        git.git_write_comment(issueMSG,config.get_github_api(configdic["github_address"]),\
         configdic["github_organization"],project_name,str(issue),\
         github_user=configdic["github_user"],github_pass=configdic["github_pass"])
 
