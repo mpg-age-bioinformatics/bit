@@ -159,7 +159,7 @@ def main():
         sys.exit(0)
 
     if args.getfolder:
-        if args.pick_a_date == None:
+        if not args.pick_a_date:
             print("--getfolder implies --pick_a_date.\nPlease use -d in combination with -g.\nThank you!")
             sys.exit(0)
         oc.ownCloud_download(gitssh=args.gitssh,pick_a_date=args.pick_a_date)
