@@ -6,6 +6,7 @@ import os
 import sys
 from subprocess import Popen, PIPE, STDOUT
 import stat
+import shlex
 
 import bit.config as config
 import bit.git as git
@@ -15,8 +16,16 @@ import bit.rsync as rsync
 import multiprocessing as mp
 
 def worker(call):
-    os.system(call)
-    return call
+    out=Popen(shlex.split(call), stdout=PIPE, stdin=PIPE, stderr=PIPE)
+    message=out.communicate()
+    out.stdout.close()
+    out.stdin.close()
+    out.stderr.close()
+    try:
+        out.kill()
+    except:
+        pass
+    return "\n********************\n"+call.split(" ")[-1]+"\n"+message[0]+"\n"+message[1]
 
 def main():
 
@@ -65,6 +74,7 @@ def main():
         results=[]
         for ff in funclist:
             res=ff.get()
+            print(res)
             results.append(res)
 
     if args.config:
