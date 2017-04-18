@@ -324,10 +324,12 @@ def rsync_from(sshLogin,rsync_files,forceImport=None,sync_to=False,sync_from=Tru
                 local_path_owner=os.stat(local_path)
                 local_path_owner=local_path_owner.st_uid
                 os.chown(ltf,local_path_owner,-1)
-
+    sync_from_calls=[]
     for f in inv_sync_dic:
         call='rsync -tlzhPL --rsh="sshpass -p %s ssh -o \
         StrictHostKeyChecking=no -l %s" %s:%s %s' %(str(remotePass), \
         str(sshLogin.split("@")[0]), str(sshLogin.split("@")[1]), \
         f, inv_sync_dic[f] )
-        os.system(call)
+        sync_from_calls.append(call)
+        #os.system(call)
+    return sync_from_calls

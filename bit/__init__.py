@@ -52,21 +52,20 @@ def main():
         if args.sync_to:
             calls=rsync.rsync_to(args.sync_to, args.sync, forceImport=args.forceRemote, \
             sync_to=True, sync_from=False)
-            pool=mp.Pool(int(args.cpus))
-
-            funclist=[]
-            for call in calls:
-                out=pool.apply_async(worker,[call])
-                funclist.append(out)
-            results=[]
-            for ff in funclist:
-                res=ff.get()
-                results.append(res)
-
         elif args.sync_from:
-            rsync.rsync_from(args.sync_from, args.sync, forceImport=args.forceRemote, \
+            calls=rsync.rsync_from(args.sync_from, args.sync, forceImport=args.forceRemote, \
             sync_to=False, sync_from=True)
 
+        pool=mp.Pool(int(args.cpus))
+
+        funclist=[]
+        for call in calls:
+            out=pool.apply_async(worker,[call])
+            funclist.append(out)
+        results=[]
+        for ff in funclist:
+            res=ff.get()
+            results.append(res)
 
     if args.config:
         print("Setting up your config file.")
