@@ -15,13 +15,14 @@ def get_remote_config(sshLogin,remotePass):
     remote_address=sshLogin.split("@")[1]
     call="sshpass -p "+remotePass+" scp "+sshLogin+":~/.bit_config \
     ~/.bit_config."+remote_address
+    #print(call)
     os.system(call)
     uhome=expanduser("~")+"/"
     if os.path.isfile(uhome+".bit_config.%s" %remote_address) :
         os.chmod(uhome+".bit_config.%s" %remote_address, stat.S_IRWXU )
     else:
-        print("Could not find ~/.bit_config on remote server.\nPlease run \
-        'bit --config' on remote server.")
+        print("Could not find ~/.bit_config on remote server.\
+        \nPlease run 'bit --config' on remote server.")
         sys.exit(0)
 
 def read_remote_config(sshLogin,remotePass,forceImport=None):
@@ -59,11 +60,11 @@ def list_local_sync(base_destination,list_of_files):
         sys.exit(0)
     else:
         project_name=check_project[0]
-        parent_folder=parent_folder[0]
+        parent_folder=parent_folder[0]+"/"
 
-    target_project=parent_folder+"/"+project_name
+    target_project=parent_folder+project_name
 
-    base_destination=base_destination+parent_folder+"/"+project_name
+    base_destination=base_destination+"/"+parent_folder+"/"+project_name
     upload_dic={}
     subfolders=[base_destination]
     check=base_destination.split("/")
@@ -106,6 +107,8 @@ def list_local_sync(base_destination,list_of_files):
     subfolders=list(set(subfolders))
     subfolders=[ xx for xx in subfolders if len(xx) > 0 ]
     subfolders.sort()
+
+    #print(upload_dic,"\n",subfolders)
 
     return upload_dic, subfolders, base_destination, parent_folder
 
@@ -173,7 +176,7 @@ def CheckFoldersCon(base,files_to_check):
     else:
         return False
 
-def rsync_to(sshLogin,rsync_files,forceImport=None,sync_to=True,sync_from=False):
+def rsync_to(sshLogin,rsync_files,forceImport=None,sync_to=True,sync_from=False):#,n_processors=1):
     remotePass=str(getpass.getpass(prompt="Please give in your password for %s:\
      " %sshLogin.split("@")[1] ))
 
@@ -197,24 +200,48 @@ def rsync_to(sshLogin,rsync_files,forceImport=None,sync_to=True,sync_from=False)
         remote_group_project="; echo Not_using_acls "
 
     create_subfolders="\'MANAGER=$(ls -ld "+remote_path+" | awk \"{ print \\$3 }\" ); \
-    if [ ! -d "+remote_path+parent_folder+" ]; then mkdir -p "+remote_path+\
-    parent_folder+remote_group_group+"; chown $MANAGER "+remote_path+parent_folder+"; fi; \
-    if [ ! -d "+path_to_project+" ]; then mkdir -p "+path_to_project+remote_group_project+"; chown \
-    $MANAGER "+path_to_project+"; fi; \
+    if [ ! -d "+remote_path+"/"+parent_folder+" ]; then mkdir -p "+remote_path+"/"+\
+    parent_folder+remote_group_group+"; chown $MANAGER "+remote_path+"/"+parent_folder+"; fi; \
+    if [ ! -d "+path_to_project+" ]; then mkdir -p "+path_to_project+remote_group_project+"; \
+    chown $MANAGER "+path_to_project+"; fi; \
     for f in "+create_subfolders+"; do if [ ! -d $f ]; then mkdir -p $f; fi; done\'"
 
     create_subfolders="sshpass -p "+str(remotePass)+" ssh "+str(sshLogin)+" "+create_subfolders
-    #print create_subfolders
-    #sys.stdout.flush()
-    #sys.exit(0)
     os.system(create_subfolders)
 
+#    def SENDFILES(f,sync_dic=sync_dic,remotePass=remotePass,sshLogin=sshLogin):
+#        call='rsync -tlzhPL --rsh="sshpass -p %s ssh -o \
+#        StrictHostKeyChecking=no -l %s" %s %s:%s' %(str(remotePass), \
+#        str(sshLogin.split("@")[0]), f,  str(sshLogin.split("@")[1]), \
+#        sync_dic[f])
+#        print(f)
+#        sys.stdout.flush()
+#        print(call)
+#        #os.system(call)
+#        return f
+
+    #pool = mp.Pool(n_processors)
+    funclist = []
     for f in sync_dic:
-        call='rsync -tlzhPL --rsh="sshpass -p %s ssh -o \
-        StrictHostKeyChecking=no -l %s" %s %s:%s' %(str(remotePass), \
-        str(sshLogin.split("@")[0]), f,  str(sshLogin.split("@")[1]), \
-        sync_dic[f])
-        os.system(call)
+        call='rsync -rtlzhPL --rsh="sshpass -p %s ssh -o StrictHostKeyChecking=no -l %s" %s %s:%s' \
+        %(str(remotePass), str(sshLogin.split("@")[0]), f,  str(sshLogin.split("@")[1]), sync_dic[f])
+        #print(call)
+        funclist.append(call)
+        #out=pool.apply_async(SENDFILES,[call])
+        #funclist.append(out)
+        #call='rsync -tlzhPL --rsh="sshpass -p %s ssh -o \
+        #StrictHostKeyChecking=no -l %s" %s %s:%s' %(str(remotePass), \
+        #str(sshLogin.split("@")[0]), f,  str(sshLogin.split("@")[1]), \
+        #sync_dic[f])
+        #os.system(call)
+    #results=[]
+    #for ff in funclist:
+    #    res=ff.get()
+    #    results.append(res)
+    #    #print( res )
+    #    #sys.stdout.flush()
+    #print(results)
+    return funclist
 
 def rsync_from(sshLogin,rsync_files,forceImport=None,sync_to=False,sync_from=True):
     remotePass=str(getpass.getpass(prompt="Please give in your password for %s: "\
