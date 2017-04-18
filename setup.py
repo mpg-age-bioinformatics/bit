@@ -11,6 +11,4 @@ setup(name = 'bit',
       install_requires = [ "requests >= 2.0.1","six"],
       zip_safe = False,
       entry_points = {'console_scripts': ['bit=bit.__init__:main']}
-      #scripts=['bit/bit']
-      #entry_points = {'console_scripts': ['bit=bit.__init__']}
       )
