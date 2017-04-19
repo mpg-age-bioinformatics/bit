@@ -223,7 +223,7 @@ def rsync_to(sshLogin,rsync_files,forceImport=None,sync_to=True,sync_from=False)
     #pool = mp.Pool(n_processors)
     funclist = []
     for f in sync_dic:
-        call='rsync -rtlzhPL --rsh="sshpass -p %s ssh -o StrictHostKeyChecking=no -l %s" %s %s:%s' \
+        call='rsync -rtlzhP --rsh="sshpass -p %s ssh -o StrictHostKeyChecking=no -l %s" %s %s:%s' \
         %(str(remotePass), str(sshLogin.split("@")[0]), f,  str(sshLogin.split("@")[1]), sync_dic[f])
         #print(call)
         funclist.append(call)
@@ -326,7 +326,7 @@ def rsync_from(sshLogin,rsync_files,forceImport=None,sync_to=False,sync_from=Tru
                 os.chown(ltf,local_path_owner,-1)
     sync_from_calls=[]
     for f in inv_sync_dic:
-        call='rsync -tlzhPL --rsh="sshpass -p %s ssh -o \
+        call='rsync -tlzhP --rsh="sshpass -p %s ssh -o \
         StrictHostKeyChecking=no -l %s" %s:%s %s' %(str(remotePass), \
         str(sshLogin.split("@")[0]), str(sshLogin.split("@")[1]), \
         f, inv_sync_dic[f] )

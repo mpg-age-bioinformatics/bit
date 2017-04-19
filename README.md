@@ -69,7 +69,7 @@ bit -i file.tar.bz2 -m my first upload
 * Latest stable release:
 
 ```bash
-pip install https://github.com/mpg-age-bioinformatics/bit/archive/0.04.tar.gz --user
+pip install https://github.com/mpg-age-bioinformatics/bit/archive/0.05.tar.gz --user
 ```
 
 * GitHub development version:
