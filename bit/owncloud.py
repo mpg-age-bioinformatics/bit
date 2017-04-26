@@ -9,7 +9,6 @@ import getpass
 
 import bit.config as config
 import bit.git as git
-import bit as bit
 import bit._owncloud as owncloud
 
 def list_upload(base_destination,list_of_files):

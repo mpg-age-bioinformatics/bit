@@ -69,7 +69,7 @@ bit -i file.tar.bz2 -m my first upload
 * Latest stable release:
 
 ```bash
-pip install https://github.com/mpg-age-bioinformatics/bit/archive/bit-0.0.3.tar.gz --user
+pip install https://github.com/mpg-age-bioinformatics/bit/archive/0.0.5.tar.gz --user
 ```
 
 * GitHub development version:
@@ -94,12 +94,13 @@ Once you have **bit** on your path you should run `bit --config` to generate a c
 ```
 usage: bit [-h] [-i [INPUT [INPUT ...]]] [-s SUBFOLDER]
            [-m [MESSAGE [MESSAGE ...]]] [-d PICK_A_DATE] [-c] [-g]
-           [-t DAYS_TO_SHARE] [--scripts] [--start START]
+           [-t DAYS_TO_SHARE] [--issue ISSUE] [--scripts] [--start START]
            [--stdfolders [STDFOLDERS [STDFOLDERS ...]]] [--adduser]
            [--sync [SYNC [SYNC ...]]] [--sync_to SYNC_TO]
-           [--sync_from SYNC_FROM] [--forceRemote] [--gitssh] [--config]
+           [--sync_from SYNC_FROM] [--cpus CPUS] [--forceRemote] [--gitssh]
+           [--config]
 
-bit, [b]ermunda [i]nformation [t]riangle. bit is a git-based tool for the
+bit, [b]ermuda [i]nformation [t]riangle. bit is a git-based tool for the
 management of code and data. It uses git for code versioning and ownCloud for
 storing and exchanging data. It saves storage by avoiding versioning of data
 while logging changes in associated git wikis.
@@ -118,11 +119,13 @@ optional arguments:
   -c, --create_folder   Create dropbox folder for user to upload data.
                         (default: False)
   -g, --getfolder       Downloads a folder as zip file. Requires
-                        --pick_a_date. Defaults --base_folder=upload:download
-                        to download (default: False)
+                        --pick_a_date. Defaults base_folder=upload:download to
+                        download (default: False)
   -t DAYS_TO_SHARE, --days_to_share DAYS_TO_SHARE
                         Number of days you wish to share this folder further.
                         (default: 21)
+  --issue ISSUE         Issue to comment on with --message and owncloud data
+                        links (default: None)
   --scripts             Needs -i and -m. Simultaneously sync the scripts.user
                         folder when uploading data. (default: False)
   --start START         Project name of the format. PI_PROJECT_NAME. Initiates
@@ -142,6 +145,8 @@ optional arguments:
   --sync_from SYNC_FROM
                         Destination server to sync from in the form:
                         <user_name>@<server.address> (default: None)
+  --cpus CPUS           Number of CPUs/channels to open for rsync. (default:
+                        1)
   --forceRemote         If syncing from or to a remoter server force the
                         import of a remote 'bit_config'. (default: False)
   --gitssh              Use your git SSH keys. (default: False)

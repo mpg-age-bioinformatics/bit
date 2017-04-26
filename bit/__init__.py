@@ -6,11 +6,26 @@ import os
 import sys
 from subprocess import Popen, PIPE, STDOUT
 import stat
+import shlex
 
 import bit.config as config
 import bit.git as git
 import bit.owncloud as oc
 import bit.rsync as rsync
+
+import multiprocessing as mp
+
+def worker(call):
+    out=Popen(shlex.split(call), stdout=PIPE, stdin=PIPE, stderr=PIPE)
+    message=out.communicate()
+    out.stdout.close()
+    out.stdin.close()
+    out.stderr.close()
+    try:
+        out.kill()
+    except:
+        pass
+    return "\n********************\n"+call.split(" ")[-1]+"\n"+message[0]+"\n"+message[1]
 
 def main():
 
@@ -36,6 +51,7 @@ def main():
     parser.add_argument("--sync", nargs='*',  help="Files or folders to syncronize with remote server using rsync over ssh.",default=None)
     parser.add_argument("--sync_to", help="Destination server to sync to in the form: <user_name>@<server.address>", default=None)
     parser.add_argument("--sync_from", help="Destination server to sync from in the form: <user_name>@<server.address>", default=None)
+    parser.add_argument("--cpus",help="Number of CPUs/channels to open for rsync.", default=1)
     parser.add_argument("--forceRemote", help="If syncing from or to a remoter server force the import of a remote 'bit_config'.", action="store_true")
     parser.add_argument("--gitssh", help="Use your git SSH keys.",  action="store_true")
     parser.add_argument("--config", help="Generate a config file.", action="store_true")
@@ -43,12 +59,23 @@ def main():
 
     if args.sync:
         if args.sync_to:
-            rsync.rsync_to(args.sync_to, args.sync, forceImport=args.forceRemote, \
+            calls=rsync.rsync_to(args.sync_to, args.sync, forceImport=args.forceRemote, \
             sync_to=True, sync_from=False)
         elif args.sync_from:
-            rsync.rsync_from(args.sync_from, args.sync, forceImport=args.forceRemote, \
+            calls=rsync.rsync_from(args.sync_from, args.sync, forceImport=args.forceRemote, \
             sync_to=False, sync_from=True)
 
+        pool=mp.Pool(int(args.cpus))
+
+        funclist=[]
+        for call in calls:
+            out=pool.apply_async(worker,[call])
+            funclist.append(out)
+        results=[]
+        for ff in funclist:
+            res=ff.get()
+            print(res)
+            results.append(res)
 
     if args.config:
         print("Setting up your config file.")
