@@ -85,7 +85,7 @@ def get_owncloud_base_folder(configdic,project_name,getfolder=None,pick_a_date=N
 
     return base_destination
 
-def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None,scripts=None,issue=None):
+def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None,scripts=None,issue=None, subfolder=None):
 
     if type(message) == list:
         message=[ str(xx) for xx in message ]
@@ -129,7 +129,7 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
 
     target_project=parent_folder+"/"+project_name
 
-    base_destination=get_owncloud_base_folder(configdic,target_project)
+    base_destination=get_owncloud_base_folder(configdic,target_project, subfolder=subfolder)
 
     upload_dic, subfolders=list_upload(base_destination,input_files)
 
