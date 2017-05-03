@@ -98,7 +98,7 @@ def main():
         checkf=len(local_path.split("/"))
         if len(full_path.split("/")) != len(local_path.split("/"))+2:
             print("The path (%s) to this project does not obey the structure and/or defined local path (%s). Check the reference structure:\n%s" \
-            %(full_path,local_path,structure) )
+            %(full_path,local_path,config.structure) )
             sys.stdout.flush()
             sys.exit(0)
 
