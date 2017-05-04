@@ -178,7 +178,7 @@ def main():
         if not args.message:
             print("ERROR\nYou need to use -m to leave a message in the logs.")
             sys.exit()
-        oc.ownCloud_upload(input_files=args.input,message=args.message,gitssh=args.gitssh,days_to_share=args.days_to_share,scripts=args.scripts,issue=args.issue, subfolder=args.subfolder)
+        oc.ownCloud_upload(input_files=args.input,message=args.message,gitssh=args.gitssh,days_to_share=args.days_to_share,scripts=args.scripts,issue=args.issue, subfolder=args.subfolder,pick_a_date=args.pick_a_date)
         sys.exit(0)
 
     if args.create_folder:
