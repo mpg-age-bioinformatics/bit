@@ -148,7 +148,7 @@ def main():
 
         local_path_owner=os.stat(local_path)
         local_path_owner=local_path_owner.st_uid
-        os.chown(full_path,local_path_owner,-1)
+        #os.chown(full_path,local_path_owner,-1)
 
         sys.exit(0)
 
