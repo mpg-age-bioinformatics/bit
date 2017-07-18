@@ -59,10 +59,31 @@ The labels are irrelevant as long as the projects/company_y/project_x structure 
 
 #### Example usage
 
+** Config **
 ```bash
+bit --config
+```
+Generate a config file with all required services addresses as well as user names and passwords if desired.
 
+** Start a project ** 
+```bash
+bit --start CA_Johns_IL13
+```
+Initiated from inside the folder of "Company_A" it initiates the project "Johns_IL13" where "CA" stands for the initials of the parent folder for easy tracing in git and ownCloud.
+
+** Upload data **
+```bash
 bit -i file.tar.bz2 -m my first upload
 ```
+Upload a file to ownCloud, register the upload and https link to the data folder on the project's wiki, commit and push wiki to git. Returns a 21 days public link as well as a permanent private link to the data.
+
+** Bind data and code **
+```bash
+bit -i file.tar.bz2 --scripts --issue 5 -m my first upload
+```
+Just like above but commiting and pushing the scripts folder to git enforcing therefore binding of code and data via the commit message.
+
+
 
 #### Installation
 
