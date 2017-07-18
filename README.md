@@ -59,25 +59,25 @@ The labels are irrelevant as long as the projects/company_y/project_x structure 
 
 #### Example usage
 
-**Config**
+**_Config_**
 ```bash
 bit --config
 ```
 Generate a config file with all required services addresses as well as user names and passwords if desired.
 
-**Start a project** 
+**_Start a project_** 
 ```bash
 bit --start CA_Johns_IL13
 ```
 Initiated from inside the folder of "Company_A" it initiates the project "Johns_IL13" where "CA" stands for the initials of the parent folder for easy tracing in git and ownCloud.
 
-**Upload data**
+**_Upload data_**
 ```bash
 bit -i file.tar.bz2 -m my first upload
 ```
 Upload a file to ownCloud, register the upload and https link to the data folder on the project's wiki, commit and push wiki to git. Returns a 21 days public link as well as a permanent private link to the data.
 
-**Bind data and code**
+**_Bind data and code_**
 ```bash
 bit -i file.tar.bz2 --scripts --issue 5 -m my first upload
 ```
