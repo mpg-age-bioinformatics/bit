@@ -205,8 +205,8 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
     else:
         skipped_files=""
     logfile="uploads.md"
-    logtext="\n\n#####["+base_destination.split("/")[3]+"\t::\t"+user_name+"]\
-    ("+private_link+") : "+str(" ".join(message))+"\n"+\
+    logtext="\n\n##### ["+base_destination.split("/")[3]+"\t::\t"+user_name+"]("+private_link+") : "\
+    +str(" ".join(message))+"\n"+\
     str(datetime.datetime.now()).split(".")[0]+", "+str(", ".join(input_files))\
     +skipped_files
 
