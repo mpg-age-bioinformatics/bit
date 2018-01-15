@@ -4,11 +4,11 @@
 
 It uses git for code versioning and ownCloud for storing and exchanging data. It avoids the costs of data versioning by logging changes in the data storage platform on github.
 
-It is primarly made for multiple users working on the same projects on an HPC cluster but it can be easely used on local/cloud/non-HPC machines without changes to the code.
+It is primarly made for multiple users working on the same projects on an HPC cluster but it can be easily used on local/cloud/non-HPC machines without changes to the code.
 
-Data is transfered over curl to avoid the risks of mounted drives and the need for ftp access.
+Data is transferred using http requests through the ownClowd API to avoid the risks of mounted drives and the need for ftp access.
 
-Everytime data is uploaded to ownClowd, the upload is registered on the respective wiki on github together with an hyperlink to the respective folder.
+Every time data is uploaded to ownClowd, the upload is registered on the respective wiki on github together with an hyperlink to the respective folder.
 
 ###### Concept
 
@@ -65,7 +65,7 @@ bit --config
 ```
 Generate a config file with all required services addresses as well as user names and passwords if desired.
 
-**_Start a project_** 
+**_Start a project_**
 ```bash
 bit --start CA_Johns_IL13
 ```
@@ -86,14 +86,6 @@ Just like above but commiting and pushing the scripts folder to git enforcing th
 
 
 #### Installation
-
-* Latest stable release:
-
-```bash
-pip install https://github.com/mpg-age-bioinformatics/bit/archive/0.0.5.tar.gz --user
-```
-
-* GitHub development version:
 
 ```bash
 git clone https://github.com/mpg-age-bioinformatics/bit.git
