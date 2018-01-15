@@ -29,7 +29,7 @@ Data can be transferred over http requests using ownCloud's API and avoiding the
 
 Using rsync, it allows seamless multiple rsync calls for efficient synchronisations of projects between different HPCs or local machines.
 
-It is primarily developed for multiple analysts working on shared projects on an HPC cluster but it can be easily used on local/cloud/non-HPC machines without changes to the code.
+It is primarily developed to support multiple bioinformaticians/analysts working on multiple shared research projects on one or more HPC clusters but it can be easily used on local/cloud/non-HPC machines without changes to the code.
 
 The open source bit package is freely available at [https://github.com/mpg-age-bioinformatics/bit](https://github.com/mpg-age-bioinformatics/bit).
 
