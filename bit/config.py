@@ -102,7 +102,7 @@ def get_github_pass(config_file=None,gitssh=None):
     return github_pass
 
 def get_local_path(structure=structure):
-    local_path=str(raw_input("The bermuda information triangle works on the basis that all your projects are located in the same path and have a parent subpath in your local machine ie. %s\n" %structure ) ) or None
+    local_path=str(raw_input("The bermuda information triangle works on the basis that all your projects are located in the same path and have a parent subpath in your local machine ie. %s\n Please give in the absolute path to your projects folder:" %structure ) ) or None
     return local_path
 
 def get_user_group():
