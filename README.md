@@ -1,4 +1,4 @@
-# bit [![Build Status](https://travis-ci.org/mpg-age-bioinformatics/bit.svg?branch=master)](https://travis-ci.org/mpg-age-bioinformatics/bit)
+# bit [![Build Status](https://travis-ci.org/mpg-age-bioinformatics/bit.svg?branch=master)](https://travis-ci.org/mpg-age-bioinformatics/bit) [![status](http://joss.theoj.org/papers/3714b0dbb3e3e5acb4277537d7093dee/status.svg)](http://joss.theoj.org/papers/3714b0dbb3e3e5acb4277537d7093dee)
 
 **The [b]ermuda [i]nformation [t]riangle is a git-based tool for the management of code and data.**
 
