@@ -1,17 +1,18 @@
 ---
 title: 'bit: a git-based tool for the management of code and data'
 tags:
-- project-management
-- data-sharing
-- data-management
+ - project-management
+ - data-sharing
+ - data-management
 authors:
-- name: Jorge Boucas
- orcid: 0000-0002-9412-7592
- affiliation: "1" # (Multiple affiliations must be quoted)
+ - name: Jorge Boucas
+   orcid: 0000-0002-9412-7592
+   affiliation: 1
 affiliations:
-- name: Bioinformatics, Max Planck Institute for Biology of Ageing, Cologne, 50931, Germany
- index: 1
+ - name: Bioinformatics, Max Planck Institute for Biology of Ageing, Cologne, 50931, Germany
+   index: 1
 date: 15 January 2018
+output: pdf_document
 ---
 
 # Summary
