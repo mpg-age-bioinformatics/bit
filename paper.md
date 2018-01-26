@@ -12,6 +12,7 @@ affiliations:
  - name: Bioinformatics, Max Planck Institute for Biology of Ageing, Cologne, 50931, Germany
    index: 1
 date: 15 January 2018
+bibliography: paper.bib
 output: pdf_document
 ---
 
