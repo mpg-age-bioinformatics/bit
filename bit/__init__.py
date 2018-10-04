@@ -53,7 +53,7 @@ def main():
     parser.add_argument("--sync_from", help="Destination server to sync from in the form: <user_name>@<server.address>", default=None)
     parser.add_argument("--cpus",help="Number of CPUs/channels to open for rsync.", default=1)
     parser.add_argument("--forceRemote", help="If syncing from or to a remoter server force the import of a remote 'bit_config'.", action="store_true")
-    parser.add_argument("--gitssh", help="Use your git SSH keys.",  action="store_true")
+    parser.add_argument("--gitnossh", help="Use password instead of git SSH keys.",  action="store_false")
     parser.add_argument("--config", help="Generate a config file.", action="store_true")
     args = parser.parse_args()
 
@@ -95,7 +95,6 @@ def main():
         project_name=os.path.basename(full_path)
 
         # check format projects_folder/group_head/project_name
-        checkf=len(local_path.split("/"))
         if len(full_path.split("/")) != len(local_path.split("/"))+2:
             print("The path (%s) to this project does not obey the structure and/or defined local path (%s). Check the reference structure:\n%s" \
             %(full_path,local_path,config.structure) )
@@ -127,7 +126,7 @@ def main():
 
         config.init_user(full_path,configdic["github_address"],configdic["github_organization"],\
         project_name,github_user=configdic["github_user"],\
-        github_pass=configdic["github_pass"],gitssh=args.gitssh)
+        github_pass=configdic["github_pass"],gitssh=args.gitnossh)
 
         # create additional folders
         for f in args.stdfolders:
@@ -156,7 +155,7 @@ def main():
         configdic=config.read_bitconfig()
         for r in config.start_reqs:
             while configdic[r] == None:
-                configdic=config.check_reqs([r],configdic,config_file=None, gitssh=args.gitssh)
+                configdic=config.check_reqs([r],configdic,config_file=None, gitssh=args.gitnossh)
         local_path=os.path.abspath(configdic["local_path"])
         if args.start:
             full_path=os.path.abspath(args.start)
@@ -165,31 +164,30 @@ def main():
         project_name=os.path.basename(full_path)
 
         # check format projects_folder/group_head/project_name
-        checkf=len(local_path.split("/"))
         if len(full_path.split("/")) != len(local_path.split("/"))+2:
-            print("The path (%s) to this project does not obey the structure and/or defined local path (%s). Check the reference structure:\n%s" %(full_path,local_path,structure))
+            print("The path (%s) to this project does not obey the structure and/or defined local path (%s). Check the reference structure:\n%s" %(full_path,local_path,config.structure))
             sys.stdout.flush()
             sys.exit(0)
 
-        config.init_user(full_path,configdic["github_address"],configdic["github_organization"],project_name,github_user=configdic["github_user"],github_pass=configdic["github_pass"],gitssh=args.gitssh)
+        config.init_user(full_path,configdic["github_address"],configdic["github_organization"],project_name,github_user=configdic["github_user"],github_pass=configdic["github_pass"],gitssh=args.gitnossh)
         sys.exit(0)
 
     if args.input:
         if not args.message:
             print("ERROR\nYou need to use -m to leave a message in the logs.")
             sys.exit()
-        oc.ownCloud_upload(input_files=args.input,message=args.message,gitssh=args.gitssh,days_to_share=args.days_to_share,scripts=args.scripts,issue=args.issue, subfolder=args.subfolder,pick_a_date=args.pick_a_date)
+        oc.ownCloud_upload(input_files=args.input,message=args.message,gitssh=args.gitnossh,days_to_share=args.days_to_share,scripts=args.scripts,issue=args.issue, subfolder=args.subfolder,pick_a_date=args.pick_a_date)
         sys.exit(0)
 
     if args.create_folder:
-        oc.ownCloud_create_folder(gitssh=args.gitssh,pick_a_date=args.pick_a_date,days_to_share=args.days_to_share)
+        oc.ownCloud_create_folder(gitssh=args.gitnossh,pick_a_date=args.pick_a_date,days_to_share=args.days_to_share)
         sys.exit(0)
 
     if args.getfolder:
         if not args.pick_a_date:
             print("--getfolder implies --pick_a_date.\nPlease use -d in combination with -g.\nThank you!")
             sys.exit(0)
-        oc.ownCloud_download(gitssh=args.gitssh,pick_a_date=args.pick_a_date)
+        oc.ownCloud_download(gitssh=args.gitnossh,pick_a_date=args.pick_a_date)
         sys.exit(0)
 
     sys.exit(0)

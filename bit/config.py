@@ -94,9 +94,9 @@ def get_github_user(config_file=None,gitssh=None):
 def get_github_pass(config_file=None,gitssh=None):
     if not gitssh:
         if config_file:
-            github_pass=str(getpass.getpass(prompt="Please give in your password for your github server or press Enter if you do not want to save this information on the config file: ")) or None
+            github_pass=str(getpass.getpass(prompt="Please give in your password or access token (infos on: https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) for your github server or press Enter if you do not want to save this information on the config file: ")) or None
         else:
-            github_pass=str(getpass.getpass(prompt="Please give in your password for your github server: ")) or None
+            github_pass=str(getpass.getpass(prompt="Please give in your password or access token for your github server: ")) or None
     else:
         github_pass=None
     return github_pass
