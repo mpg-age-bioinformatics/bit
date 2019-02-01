@@ -113,7 +113,7 @@ def main():
         github_api=config.get_github_api(configdic["github_address"])
         github_api=github_api+configdic["github_organization"]+"/repos"
         create_call=["curl","-u",configdic["github_user"]+":"+configdic["github_pass"]\
-        ,github_api,"-d",'{"name":"'+project_name+'","private": "true",\
+        ,github_api,"-d",'{"name":"'+project_name+'","private": true,\
         "auto_init": true }']
 
         p = Popen(create_call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
