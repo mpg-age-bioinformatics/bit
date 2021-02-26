@@ -105,7 +105,7 @@ def git_push(github_address,github_organization,github_repo,github_user=None,git
         FNULL = open(os.devnull, 'w')
         out=Popen(call, stdout=FNULL, stdin=PIPE ,stderr=PIPE) #, stdout=FNULL, stderr=subprocess.STDOUT old: stdout=PIPE, stdin=PIPE, stderr=STDOUT
         out=Popen(["git","push"],stdout=PIPE, stdin=PIPE, stderr=PIPE)
-	out.stdout.close()
+    out.stdout.close()
     out.stdin.close()
     out.stderr.close()
     try:
@@ -130,13 +130,13 @@ def git_write_comment(message,github_api,github_organization,github_repo,issue,g
     import time
     time.sleep(2)
     try:
-		out.stdout.close()
+        out.stdout.close()
     except:
-		pass
+        pass
     try:
         out.stdin.close()
     except:
-		pass
+        pass
     try:
         out.stderr.close()
     except:

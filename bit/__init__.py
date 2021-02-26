@@ -104,7 +104,7 @@ def main():
         # have the user rechecking that the the string for the project name is really correct
         checks=None
         while checks not in ["Y","N"]:
-            checks=str(raw_input("Is the label %s in agreement with the structure PF_project_name where PF stands for the initials of the Parent_Folder? (Y/N) " \
+            checks=str(input("Is the label %s in agreement with the structure PF_project_name where PF stands for the initials of the Parent_Folder? (Y/N) " \
             %project_name )) or None
         if checks=="N":
             sys.exit(0)
@@ -121,7 +121,7 @@ def main():
         sys.stdout.flush()
 
         # clone the repo and the wiki by initiating this user
-        raw_input("\n\n*************\n\nPlease go to %s/%s/%s/wiki and click on 'Create the first page' and then 'Save Page'.\n\nPress Enter once you have saved the first wiki page.\n\n*************\n\n" \
+        input("\n\n*************\n\nPlease go to %s/%s/%s/wiki and click on 'Create the first page' and then 'Save Page'.\n\nPress Enter once you have saved the first wiki page.\n\n*************\n\n" \
         %(configdic["github_address"],configdic["github_organization"],project_name) )
 
         config.init_user(full_path,configdic["github_address"],configdic["github_organization"],\
