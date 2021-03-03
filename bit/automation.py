@@ -345,3 +345,23 @@ def git_sync(local_name, github_repo, message):
     git_merge(message)
     git_push(github_repo)
     os.chdir(cwd)
+
+def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="automation helper",\
+    formatter_class = argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-e", "--email", help="Email subject.")
+    parser.add_argument("-p", "--project", help="Project type. eg. RNAseq.")
+    args = parser.parse_args()
+
+    config_dic=read_config()
+    
+    send_email(args.email, body="", \
+               attach=None, \
+               toaddr=[],\
+               fromaddr="automation@age.mpg.de",\
+               project_type=args.project,\
+               config_dic=config_dic)
+        
+    sys.exit(0)

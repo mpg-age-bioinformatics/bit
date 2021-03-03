@@ -10,5 +10,5 @@ setup(name = 'bit',
       packages = [ 'bit' ],
       install_requires = [ "requests >= 2.0.1","six", "xlrd==1.2.0", "openpyxl==3.0.5"],
       zip_safe = False,
-      entry_points = {'console_scripts': ['bit=bit.__init__:main']}
+      entry_points = {'console_scripts': ['bit=bit.__init__:main','mail=bit.automation:main']}
       )

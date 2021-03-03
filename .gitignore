@@ -11,3 +11,4 @@
 
 # Other
 *.swp
+*ipynb_checkpoints*
