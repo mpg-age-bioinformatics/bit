@@ -78,7 +78,7 @@ def send_email(subject, body="", EMAIL_TOKEN=None, \
 
     msg = MIMEMultipart()
     
-    static_receiver=["jboucas@age.mpg.de"]
+    static_receiver=["automation@age.mpg.de"]
     toaddr=",".join(static_receiver+toaddr)
 
     msg['From'] = fromaddr
