@@ -48,22 +48,22 @@ start_reqs=["github_address","github_organization",\
 "github_user","github_pass","local_path"]
 
 def get_owncloud_address():
-    owncloud_address=str(raw_input("Please give in your ownCloud address (eg. http://domain.tld/owncloud): ")) or None
+    owncloud_address=str(input("Please give in your ownCloud address (eg. http://domain.tld/owncloud): ")) or None
     return owncloud_address
 
 def get_owncloud_upload_folder():
-    owncloud_upload_folder=str(raw_input("Please give in the folder in your ownCloud that will be used to deliver data to users.\nYou can share this folder with your colleagues so that everybody delivers data through the same folder. (default: DELIVERY_SERVICE):")) or "DELIVERY_SERVICE"
+    owncloud_upload_folder=str(input("Please give in the folder in your ownCloud that will be used to deliver data to users.\nYou can share this folder with your colleagues so that everybody delivers data through the same folder. (default: DELIVERY_SERVICE):")) or "DELIVERY_SERVICE"
     return owncloud_upload_folder
 
 def get_owncloud_download_folder():
-    owncloud_download_folder=str(raw_input("Please give in the folder in your ownCloud that will be used to retrieve data from users.\nYou can share this folder with your colleagues so that everybody retrieves data through the same folder. (default: DROPBOX):")) or "DROPBOX"
+    owncloud_download_folder=str(input("Please give in the folder in your ownCloud that will be used to retrieve data from users.\nYou can share this folder with your colleagues so that everybody retrieves data through the same folder. (default: DROPBOX):")) or "DROPBOX"
     return owncloud_download_folder
 
 def get_owncloud_user(config_file=None):
     if config_file:
-        owncloud_user=str(raw_input("Please give in your ownCloud user name or press Enter if you do not want to save this information on the config file: ")) or None
+        owncloud_user=str(input("Please give in your ownCloud user name or press Enter if you do not want to save this information on the config file: ")) or None
     else:
-        owncloud_user=str(raw_input("Please give in your ownCloud user name: ")) or None
+        owncloud_user=str(input("Please give in your ownCloud user name: ")) or None
     return owncloud_user
 
 def get_owncloud_pass(config_file=None):
@@ -74,19 +74,19 @@ def get_owncloud_pass(config_file=None):
     return owncloud_pass
 
 def get_github_address():
-    github_address=str(raw_input("Github server address (default: https://github.com): ") or "https://github.com")
+    github_address=str(input("Github server address (default: https://github.com): ") or "https://github.com")
     return github_address
 
 def get_github_organization():
-    github_organization=str(raw_input("Your GitHub organization name (eg. mpg-age-bioinformatics for https://github.com/mpg-age-bioinformatics): ")) or None
+    github_organization=str(input("Your GitHub organization name (eg. mpg-age-bioinformatics for https://github.com/mpg-age-bioinformatics): ")) or None
     return github_organization
 
 def get_github_user(config_file=None,gitssh=None):
     if not gitssh:
         if config_file:
-            github_user=str(raw_input("Please give in your user name for your github server or press Enter if you do not want to save this information on the config file: ")) or None
+            github_user=str(input("Please give in your user name for your github server or press Enter if you do not want to save this information on the config file: ")) or None
         else:
-            github_user=str(raw_input("Please give in your user name for your github server: ")) or None
+            github_user=str(input("Please give in your user name for your github server: ")) or None
     else:
         github_user=None
     return github_user
@@ -102,11 +102,11 @@ def get_github_pass(config_file=None,gitssh=None):
     return github_pass
 
 def get_local_path(structure=structure):
-    local_path=str(raw_input("The bermuda information triangle works on the basis that all your projects are located in the same path and have a parent subpath in your local machine ie. %s\n Please give in the absolute path to your projects folder: " %structure ) ) or None
+    local_path=str(input("The bermuda information triangle works on the basis that all your projects are located in the same path and have a parent subpath in your local machine ie. %s\n Please give in the absolute path to your projects folder: " %structure ) ) or None
     return local_path
 
 def get_user_group():
-    user_group=str(raw_input("If you are using ACLs to give your group members access to this project please give in the users that will have read write access to every projects top folders. eg. userA,userB,userC -- DO NOT forger to give in your own user name: ")) or None
+    user_group=str(input("If you are using ACLs to give your group members access to this project please give in the users that will have read write access to every projects top folders. eg. userA,userB,userC -- DO NOT forger to give in your own user name: ")) or None
     if user_group:
         user_group=user_group.split(",")
     return user_group
@@ -185,5 +185,5 @@ def init_user(path_to_project,github_address,github_organization,github_repo,git
     response=git.git_clone(path_to_project+"/scripts."+user_name , github_address, github_organization, github_repo, github_user=github_user, github_pass=github_pass, gitssh=gitssh)
     response=git.git_clone(path_to_project+"/wiki."+user_name , github_address, github_organization, github_repo+".wiki", github_user=github_user, github_pass=github_pass, gitssh=gitssh)
     while response == 1:
-        raw_input("\n\n*************\n\nThe wiki for this project has not yet been created.\n\n Please go to %s/%s/%s/wiki and click on 'Create the first page' and then 'Save Page'.\n\nPress Enter once you have saved the first wiki page.\n\n*************\n\n" %(github_address,github_organization,github_repo) )
+        input("\n\n*************\n\nThe wiki for this project has not yet been created.\n\n Please go to %s/%s/%s/wiki and click on 'Create the first page' and then 'Save Page'.\n\nPress Enter once you have saved the first wiki page.\n\n*************\n\n" %(github_address,github_organization,github_repo) )
         response=git.git_clone(path_to_project+"/wiki."+user_name ,github_address,github_organization,github_repo+".wiki",github_user=github_user,github_pass=github_pass,gitssh=gitssh)
