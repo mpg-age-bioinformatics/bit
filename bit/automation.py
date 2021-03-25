@@ -250,6 +250,7 @@ def git_clone(local_name,github_repo):
     if not os.path.exists(local_name):
         os.makedirs(local_name)
         out=subprocess.call(['setfacl', '-Rdm', 'g:group_bit:rx', local_name ])
+        out=subprocess.call(['chmod', 'g-w', local_name ])
 
     cwd = os.getcwd()
     os.chdir(local_name)
