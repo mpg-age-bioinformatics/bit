@@ -74,7 +74,11 @@ def send_email(subject, body="", EMAIL_TOKEN=None, \
     if not EMAIL_TOKEN:
         EMAIL_TOKEN=config_dic["EMAIL_TOKEN"]
     if not project_type:
-        project_type=config_dic["project_type"]
+        project_type="["+config_dic["project_type"]+"]"
+    if project_type=="empty":
+        project_type=""
+    else:
+        project_type="["+project_type+"]"
 
     msg = MIMEMultipart()
     
@@ -87,7 +91,7 @@ def send_email(subject, body="", EMAIL_TOKEN=None, \
     if str(subject)[0] != "[":
         subject=" "+subject
     
-    msg['Subject'] = "[{project_type}]{subject}".format(project_type=project_type,subject=subject)
+    msg['Subject'] = "{project_type}{subject}".format(project_type=project_type,subject=subject)
     msg.attach(MIMEText(body, 'plain'))
 
     if attach:
@@ -353,14 +357,26 @@ def main():
     parser = argparse.ArgumentParser(description="automation helper",\
     formatter_class = argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-e", "--email", help="Email subject.")
-    parser.add_argument("-p", "--project", help="Project type. eg. RNAseq.")
+    parser.add_argument("-p", "--project", help="Project type. eg. RNAseq.", default="empty")
+    parser.add_argument("-t", "--to", help="Receivers.",default=None)
+    parser.add_argument("-l", "--link", help="Link to results.",default=None)
     args = parser.parse_args()
 
     config_dic=read_config()
+
+    if args.link:
+        body="Hi,\n\nyou can find the results for this project here:\n\n{link}\n\nThis is an automatically generated email.".format(link=args.link)
+    else:
+        body=""
+
+    if args.to:
+        to=str(args.to).split(",")
+    else:
+        to=[]
     
-    send_email(args.email, body="", \
+    send_email(args.email, body=body, \
                attach=None, \
-               toaddr=[],\
+               toaddr=to,\
                fromaddr="automation@age.mpg.de",\
                project_type=args.project,\
                config_dic=config_dic)
