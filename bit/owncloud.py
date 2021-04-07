@@ -191,10 +191,22 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
     print("Logging changes..")
     sys.stdout.flush()
     user_name=getpass.getuser()
-    os.chdir(local_path+"/"+target_project+"/wiki."+user_name)
-    files_to_add=os.listdir(local_path+"/"+target_project+"/wiki."+user_name)
+    wikidir=local_path+"/"+target_project+"/wiki."+user_name
+    scriptsdir=local_path+"/"+target_project+"/scripts."+user_name
+    if os.path.isdir(wikidir):
+        logdir=wikidir
+        log_project=project_name+".wiki"
+    elif os.path.isdir(scriptsdir):
+        logdir=scriptsdir
+        log_project=project_name
+    else:
+        print("Could not find wiki."+user_name+" nor scripts."+user_name)
+        sys.exit(1)
+
+    os.chdir(logdir)
+    files_to_add=os.listdir(logdir)
     git.git_sync(files_to_add,"bit sync",configdic["github_address"],\
-    configdic["github_organization"],project_name+".wiki",\
+    configdic["github_organization"],log_project,\
     github_user=configdic["github_user"],github_pass=configdic["github_pass"],\
     gitssh=gitssh)
 
@@ -218,7 +230,7 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
     git.git_add(["uploads.md"])
     git.git_commit(message)
     git.git_push(configdic["github_address"],configdic["github_organization"],\
-    project_name+".wiki",github_user=configdic["github_user"],\
+    log_project,github_user=configdic["github_user"],\
     github_pass=configdic["github_pass"],gitssh=gitssh)
 
     if scripts:
