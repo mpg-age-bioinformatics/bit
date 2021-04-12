@@ -147,7 +147,7 @@ def check_project_exists(folder,config_dic,group,project_title, email):
         sys.exit(1)
     return True
 
-def check_source_files(files,md5file,store_age_folder,GET_RAW,project_title,email,config_dic):
+def check_source_files(files,md5file,store_age_folder,GET_RAW,project_title,email,config_dic,metadata):
     for f in files:
         if ( not os.path.exists(store_age_folder+f) ) & ( GET_RAW ):
             send_email("[{group_prefix}_{project_title}] raw data file missing".format(group_prefix=groups_dic[metadata["Group"]],project_title=project_title),\
