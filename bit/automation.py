@@ -83,10 +83,10 @@ def send_email(subject, body="", EMAIL_TOKEN=None, \
     msg = MIMEMultipart()
     
     static_receiver=["automation@age.mpg.de"]
-    toaddr=", ".join(static_receiver+toaddr)
+    toaddr=static_receiver+toaddr
 
     msg['From'] = fromaddr
-    msg['To'] = toaddr
+    msg['To'] = ", ".join(toaddr)
     
     if str(subject)[0] != "[":
         subject=" "+subject
