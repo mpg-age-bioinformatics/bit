@@ -75,7 +75,7 @@ def send_email(subject, body="", EMAIL_TOKEN=None, \
         EMAIL_TOKEN=config_dic["EMAIL_TOKEN"]
     if not project_type:
         project_type="["+config_dic["project_type"]+"]"
-    if project_type=="empty":
+    elif project_type=="empty":
         project_type=""
     else:
         project_type="["+project_type+"]"
