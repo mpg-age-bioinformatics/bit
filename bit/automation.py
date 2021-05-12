@@ -164,7 +164,7 @@ def check_source_files(files,md5file,store_age_folder,GET_RAW,project_title,emai
                        "{f} missing".format(f=f),\
                        toaddr=email, 
                        config_dic=config_dic)
-            print("{f} missing".format(f=f))
+            print("md5sums file missing".format(f=f))
             sys.stdout.flush()
             sys.exit(1)
     return True
