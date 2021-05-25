@@ -253,8 +253,8 @@ def git_clone(local_name,github_repo):
     git="git@github.molgen.mpg.de:mpg-age-bioinformatics/{github_repo}.git".format(github_repo=github_repo)
     if not os.path.exists(local_name):
         os.makedirs(local_name)
-        out=subprocess.call(['setfacl', '-Rdm', 'g:group_bit:rx', local_name ])
-        out=subprocess.call(['chmod', 'g-w', local_name ])
+        out=subprocess.call(['setfacl', '-Rdm', 'g:group_bit:rwx', local_name ])
+        out=subprocess.call(['chmod', '-R','g+w', local_name ])
 
     cwd = os.getcwd()
     os.chdir(local_name)
