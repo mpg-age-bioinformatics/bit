@@ -117,7 +117,7 @@ def main():
         "auto_init": true }']
 
         p = Popen(create_call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-        print(p.communicate()[0].rstrip())
+        print(p.communicate()[0].decode('utf-8').rstrip())
         sys.stdout.flush()
 
         # clone the repo and the wiki by initiating this user
@@ -140,7 +140,7 @@ def main():
                 for use in user_group:
                     call=["setfacl","-m","user:%s:rwx" %use,full_path]
                     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-                    print(out.communicate()[0].rstrip())
+                    print(out.communicate()[0].decode('utf-8').rstrip())
             except:
                 print("Failed to setfacls.")
                 sys.stdout.flush()

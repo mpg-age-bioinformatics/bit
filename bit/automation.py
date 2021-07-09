@@ -187,7 +187,7 @@ def md5sumcheck(file,config_dic,group,project_title,project_archive,email,md5fil
     cmd = [ "md5sum", file ] 
     sys.stdout.flush()
     out=Popen(cmd, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    re=str( out.communicate()[0].rstrip()) 
+    re=str( out.communicate()[0].decode('utf-8').rstrip()) 
     out.stdout.close()
     out.stdin.close()
     out.stderr.close()
@@ -270,7 +270,7 @@ def git_fetch(github_repo):
     git="git@github.molgen.mpg.de:mpg-age-bioinformatics/{github_repo}.git".format(github_repo=github_repo)
     call=["git","fetch",git]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    print(str( out.communicate()[0].rstrip()) )
+    print(str( out.communicate()[0].decode('utf-8').rstrip()) )
     out.stdout.close()
     out.stdin.close()
     out.stderr.close()
@@ -282,7 +282,7 @@ def git_fetch(github_repo):
 def git_merge(message):
     call=["git","merge","FETCH_HEAD","-m",message]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    print(str( out.communicate()[0].rstrip()) )
+    print(str( out.communicate()[0].decode('utf-8').rstrip()) )
     out.stdout.close()
     out.stdin.close()
     out.stderr.close()
@@ -295,7 +295,7 @@ def git_pull(github_repo):
     git="git@github.molgen.mpg.de:mpg-age-bioinformatics/{github_repo}.git".format(github_repo=github_repo)
     call=["git","pull",git]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    print(str( out.communicate()[0].rstrip()) )
+    print(str( out.communicate()[0].decode('utf-8').rstrip()) )
     out.stdout.close()
     out.stdin.close()
     out.stderr.close()
@@ -307,7 +307,7 @@ def git_pull(github_repo):
 def git_add():
     call=["git","add","-A", "." ]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    print(str(out.communicate()[0].rstrip()) )
+    print(str(out.communicate()[0].decode('utf-8').rstrip()) )
     out.stdout.close()
     out.stdin.close()
     out.stderr.close()
@@ -319,7 +319,7 @@ def git_add():
 def git_commit(message):
     call=["git","commit","-m", message]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    print(str( out.communicate()[0].rstrip()) )
+    print(str( out.communicate()[0].decode('utf-8').rstrip()) )
     out.stdout.close()
     out.stdin.close()
     out.stderr.close()
@@ -332,7 +332,7 @@ def git_push(github_repo):
     git="git@github.molgen.mpg.de:mpg-age-bioinformatics/{github_repo}.git".format(github_repo=github_repo)
     call=["git","push",git,"--all"]
     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    print(str( out.communicate()[0].rstrip()) )
+    print(str( out.communicate()[0].decode('utf-8').rstrip()) )
     out.stdout.close()
     out.stdin.close()
     out.stderr.close()
