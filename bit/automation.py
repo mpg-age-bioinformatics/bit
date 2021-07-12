@@ -254,7 +254,8 @@ def make_github_card(make_issue_response, repo_name, user, token, config_dic):
     # Our url to create issues via POST
     url = 'https://github.molgen.mpg.de/api/v3/projects/columns/301/cards'
     issue_response=json.loads(make_issue_response.text)
-    card = {'content_id': issue_response["id"],\
+    issue_id=issue_response["id"]
+    card = {'content_id': issue_id,\
             "content_type":"Issue"}
     # Add the issue to our repository
     response = requests.post( url, data=json.dumps(card), headers={"Accept": "application/vnd.github.inertia-preview+json"}, auth=( user, token ))#, headers=headers)
