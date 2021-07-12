@@ -243,7 +243,29 @@ def make_github_issue(title, repo_name, user, token, config_dic, body=None, assi
         print('Could not create Issue "%s"' % title)
         print('Response:', response.content)
         print(response.text)
-        send_email("[{repo}] could not create Issue".format(repo=repo), 
+        send_email("[{repo}] could not create Issue".format(repo=repo_name), 
+                        config_dic=config_dic)
+        sys.stdout.flush()
+        sys.exit(1)
+    return response
+
+def make_github_card(make_issue_response, repo_name, user, token, config_dic):
+    '''Create an card for an issue on github.com using the given parameters.'''
+    # Our url to create issues via POST
+    url = 'https://github.molgen.mpg.de/api/v3/projects/columns/301/cards'
+    issue_response=json.loads(make_issue_response.text)
+    card = {'content_id': issue_response["id"],\
+            "content_type":"Issue"}
+    # Add the issue to our repository
+    response = requests.post( url, data=json.dumps(card), headers={"Accept": "application/vnd.github.inertia-preview+json"}, auth=( user, token ))#, headers=headers)
+    
+    if response.status_code == 201:
+        print('Successfully created card.' )
+    else:
+        print('Could not create card.')
+        print('Response:', response.content)
+        print(response.text)
+        send_email("[{repo}] could not create card".format(repo=repo_name), 
                         config_dic=config_dic)
         sys.stdout.flush()
         sys.exit(1)
