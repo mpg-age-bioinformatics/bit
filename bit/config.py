@@ -190,3 +190,5 @@ def init_user(path_to_project,github_address,github_organization,github_repo,git
         if response == 1:
             print("Skipping wiki creation.")
             sys.stdout.flush()
+    print("User initialized.")
+    sys.stdout.flush()
