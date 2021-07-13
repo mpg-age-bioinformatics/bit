@@ -5,6 +5,8 @@ import os
 import sys
 import subprocess as sb
 from subprocess import Popen, PIPE, STDOUT
+import requests
+import json
 
 def git_target(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None,usepw=None):
     url=github_address.split("//")[-1]
@@ -145,3 +147,60 @@ def git_write_comment(message,github_api,github_organization,github_repo,issue,g
         out.kill()
     except:
         pass
+
+
+def make_github_repo( github_api, repo_name, configdic):
+    url=f'{github_api}{configdic["github_organization"]}/repos'
+    repo = { "name" : repo_name , \
+             "private" : 'true' ,\
+             "auto_init": 'true' }
+    response = requests.post( url, data=json.dumps(repo), auth=( configdic["github_user"], configdic["github_pass"] ))
+    if response.status_code == 201:
+        print('Successfully created Repository "%s"' % repo_name )
+    else:
+        print('Could not create Repository "%s"' % repo_name)
+        print('Response:', response.content)
+        sys.stdout.flush()
+        sys.exit(1)
+    return response
+
+def make_github_issue(github_api,  title, repo_name, configdic, assignee ):
+    '''Create an issue on github.com using the given parameters.'''
+    # Our url to create issues via POST
+    base_api=github_api.split("orgs")[0]
+    url=f'{base_api}repos/{configdic["github_organization"]}/{repo_name}/issues'
+    issue = {'title': title,\
+            'assignee': assignee}
+    # Add the issue to our repository
+    response = requests.post( url, data=json.dumps(issue), headers={"Accept": "application/vnd.github.v3+json"}, auth=( configdic["github_user"], configdic["github_pass"] ))#, headers=headers)
+    
+    if response.status_code == 201:
+        print('Successfully created Issue "%s"' % title )
+
+    else:
+        print('Could not create Issue "%s"' % title)
+        print('Response:', response.content)
+        sys.stdout.flush()
+        sys.exit(1)
+    return response
+
+def make_github_card(make_issue_response, github_api, configdic, column):
+    '''Create an card for an issue on github.com using the given parameters.'''
+    # Our url to create issues via POST
+    base_api=github_api.split("orgs")[0]
+    url=f'{base_api}projects/columns/{column}/cards'
+    issue_response=json.loads(make_issue_response.text)
+    issue_id=issue_response["id"]
+    card = {'content_id': issue_id,\
+            "content_type":"Issue"}
+    # Add the issue to our repository
+    response = requests.post( url, data=json.dumps(card), headers={"Accept": "application/vnd.github.inertia-preview+json"}, auth=( configdic["github_user"], configdic["github_pass"] ))#, headers=headers)
+    
+    if response.status_code == 201:
+        print('Successfully created card.' )
+    else:
+        print('Could not create card.')
+        print('Response:', response.content)
+        sys.stdout.flush()
+        sys.exit(1)
+    return response

@@ -111,18 +111,23 @@ def main():
 
         # create the repo
         github_api=config.get_github_api(configdic["github_address"])
-        github_api=github_api+configdic["github_organization"]+"/repos"
-        create_call=["curl","-u",configdic["github_user"]+":"+configdic["github_pass"]\
-        ,github_api,"-d",'{"name":"'+project_name+'","private": true,\
-        "auto_init": true }']
+        # github_api=github_api+configdic["github_organization"]+"/repos"
+        # create_call=["curl","-u",configdic["github_user"]+":"+configdic["github_pass"]\
+        # ,github_api,"-d",'{"name":"'+project_name+'","private": true,\
+        # "auto_init": true }']
 
-        p = Popen(create_call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-        print(p.communicate()[0].decode('utf-8').rstrip())
-        sys.stdout.flush()
+        # p = Popen(create_call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+        # print(p.communicate()[0].decode('utf-8').rstrip())
+        # sys.stdout.flush()
 
+        response =  git.make_github_repo(github_api, project_name, configdic)
+        response =  git.make_github_issue(github_api, project_name, project_name, configdic, configdic["github_user"] )
+        response =  git.make_github_card(response, github_api, configdic, "77")
+
+        # !!removing the need for wiki!!
         # clone the repo and the wiki by initiating this user
-        input("\n\n*************\n\nPlease go to %s/%s/%s/wiki and click on 'Create the first page' and then 'Save Page'.\n\nPress Enter once you have saved the first wiki page.\n\n*************\n\n" \
-        %(configdic["github_address"],configdic["github_organization"],project_name) )
+        #input("\n\n*************\n\nPlease go to %s/%s/%s/wiki and click on 'Create the first page' and then 'Save Page'.\n\nPress Enter once you have saved the first wiki page.\n\n*************\n\n" \
+        #%(configdic["github_address"],configdic["github_organization"],project_name) )
 
         config.init_user(full_path,configdic["github_address"],configdic["github_organization"],\
         project_name,github_user=configdic["github_user"],\
