@@ -195,7 +195,7 @@ def md5sumcheck(file,config_dic,group,project_title,project_archive,email,md5fil
         out.kill()
     except:
         pass
-    md5sum=str(re).split(" ")[0].split("'")[1]
+    md5sum=str(re).split(" ")[0]
     md5sums={ os.path.basename(file): md5sum }
     
     missing_file=verify_md5sum(md5sums,project_archive+md5file)
