@@ -19,6 +19,7 @@ from bit.config import read_bitconfig
 
 groups_dic={"Adam_Antebi":"AA",\
 "Aleksandra_Filipovska":"AF",\
+"Anne_Schaefer":"AS",\
 "Bioinformatics":"bit",\
 "Constantinos_Demetriades":"CD",\
 "CRISPR_Screening":"CS",\
