@@ -275,19 +275,19 @@ def make_github_card(make_issue_response, repo_name, user, token, config_dic):
 
 def git_clone(local_name,github_repo):
     git="git@github.molgen.mpg.de:mpg-age-bioinformatics/{github_repo}.git".format(github_repo=github_repo)
-    if not os.path.exists(local_name):
-        os.makedirs(local_name)
-        out=subprocess.call(['setfacl', '-Rdm', 'g:group_bit:rwx', local_name ])
-        out=subprocess.call(['chmod', '-R','g+w', local_name ])
-
-    cwd = os.getcwd()
-    os.chdir(local_name)
-    out=subprocess.call(['git','init'])
-    out=subprocess.call(['git','config','remote.origin.url',git])
-    out=subprocess.call(['git','config','branch.master.remote','origin'])
-    out=subprocess.call(['git','config','branch.master.merge','refs/heads/master'])
-    out=subprocess.call(['git','pull', git])
-    os.chdir(cwd)
+    # cwd = os.getcwd()
+    # os.chdir(local_name)
+    # out=subprocess.call(['git','init'])
+    # out=subprocess.call(['git','config','remote.origin.url',git])
+    # out=subprocess.call(['git','config','branch.master.remote','origin'])
+    # out=subprocess.call(['git','config','branch.master.merge','refs/heads/master'])
+    # out=subprocess.call(['git','pull', git])
+    out=subprocess.call(['git','clone',git, local_name ])
+    # if not os.path.exists(local_name):
+    #     os.makedirs(local_name)
+    out=subprocess.call(['setfacl', '-Rdm', 'g:group_bit:rwx', local_name ])
+    out=subprocess.call(['chmod', '-R','g+w', local_name ])
+    # os.chdir(cwd)
     return out
 
 def git_fetch(github_repo):

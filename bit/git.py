@@ -22,16 +22,17 @@ def git_target(github_address,github_organization,github_repo,github_user=None,g
 
 def git_clone(local_name,github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):
     git, git2 =git_target(github_address,github_organization,github_repo,github_user=github_user,github_pass=github_pass,gitssh=gitssh,usepw=True)
-    if not os.path.exists(local_name):
-        os.makedirs(local_name)
-    cwd = os.getcwd()
-    os.chdir(local_name)
-    out=sb.call(['git','init'])
-    out=sb.call(['git','config','remote.origin.url',git2])
-    out=sb.call(['git','config','branch.master.remote','origin'])
-    out=sb.call(['git','config','branch.master.merge','refs/heads/master'])
-    out=sb.call(['git','pull', git])
-    os.chdir(cwd)
+    # if not os.path.exists(local_name):
+    #     os.makedirs(local_name)
+    # cwd = os.getcwd()
+    # os.chdir(local_name)
+    # out=sb.call(['git','init'])
+    # out=sb.call(['git','config','remote.origin.url',git2])
+    # out=sb.call(['git','config','branch.master.remote','origin'])
+    # out=sb.call(['git','config','branch.master.merge','refs/heads/master'])
+    # out=sb.call(['git','pull', git])
+    out=sb.call(['git','clone',git, local_name ])
+    # os.chdir(cwd)
     return out
 
 def git_fetch(github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):

@@ -183,6 +183,8 @@ def check_reqs(requirements,configdic,config_file=None, gitssh=None):
 
 def init_user(path_to_project,github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):
     user_name=getpass.getuser()
+    if not os.path.exists(path_to_project):
+        os.makedirs(path_to_project)
     response=git.git_clone(path_to_project+"/scripts."+user_name , github_address, github_organization, github_repo, github_user=github_user, github_pass=github_pass, gitssh=gitssh)
     response=git.git_clone(path_to_project+"/wiki."+user_name , github_address, github_organization, github_repo+".wiki", github_user=github_user, github_pass=github_pass, gitssh=gitssh)
     if response == 1:
