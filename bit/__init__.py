@@ -145,7 +145,10 @@ def main():
                 for use in user_group:
                     call=["setfacl","-m","user:%s:rwx" %use,full_path]
                     out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-                    print(out.communicate()[0].decode('utf-8').rstrip())
+                    prt=str(out.communicate()[0].decode('utf-8').rstrip())
+                    if prt:
+                        print(prt)
+                        sys.stdout.flush()
             except:
                 print("Failed to setfacls.")
                 sys.stdout.flush()

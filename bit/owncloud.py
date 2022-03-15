@@ -205,7 +205,7 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
 
     os.chdir(logdir)
     files_to_add=os.listdir(logdir)
-    git.git_sync(files_to_add,"bit sync",configdic["github_address"],\
+    git.git_sync(files_to_add,message,configdic["github_address"],\
     configdic["github_organization"],log_project,\
     github_user=configdic["github_user"],github_pass=configdic["github_pass"],\
     gitssh=gitssh)
