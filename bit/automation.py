@@ -250,10 +250,10 @@ def make_github_issue(title, repo_name, user, token, config_dic, body=None, assi
         sys.exit(1)
     return response
 
-def make_github_card(make_issue_response, repo_name, user, token, config_dic):
+def make_github_card(make_issue_response, repo_name, user, token, config_dic, column=301):
     '''Create an card for an issue on github.com using the given parameters.'''
     # Our url to create issues via POST
-    url = 'https://github.molgen.mpg.de/api/v3/projects/columns/301/cards'
+    url = f'https://github.molgen.mpg.de/api/v3/projects/columns/{column}/cards'
     issue_response=json.loads(make_issue_response.text)
     issue_id=issue_response["id"]
     card = {'content_id': issue_id,\
