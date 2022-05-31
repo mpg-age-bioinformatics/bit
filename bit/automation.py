@@ -108,7 +108,7 @@ def send_email(subject, body="", EMAIL_TOKEN=None, \
     text = msg.as_string()
     server.sendmail(fromaddr, toaddr, text)
     server.quit()
-    print( "Email sent to {toaddr}".format(toaddr=toaddr) )
+    print( "Email sent to {}".format(toaddr=', '.join(toaddr) ) )
     sys.stdout.flush()
     
 def check_email(email,config_dic,submission_file):
