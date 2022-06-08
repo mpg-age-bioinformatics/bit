@@ -56,7 +56,7 @@ def read_config(config_file="/beegfs/group_bit/data/projects/departments/Bioinfo
     with open(config_file, "r") as file_in:
         for line in file_in:
             line=line.rstrip("\n")
-            line=line.split("=")
+            line=line.split(" ")
             config_dic[line[0]]=line[1]
             
     bit_config=read_bitconfig()
