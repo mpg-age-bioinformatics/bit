@@ -125,7 +125,7 @@ def check_email(email,config_dic,submission_file):
         sys.exit(1)
     return email
 
-def check_group(group,submission_file,email,config_dic):
+def check_group(group,submission_file,email,project_type,config_dic):
     if group not in list(groups_dic.keys()):
         print("Group {group} does not exist.".format(group=group) )
         sys.stdout.flush()
