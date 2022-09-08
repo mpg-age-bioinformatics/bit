@@ -1,4 +1,4 @@
-import smtplib
+import smtplib, ssl
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
