@@ -125,17 +125,19 @@ def check_email(email,config_dic,submission_file):
         sys.exit(1)
     return email
 
-def check_group(group,submission_file,email):
+def check_group(group,submission_file,email,config_dic):
     if group not in list(groups_dic.keys()):
         print("Group {group} does not exist.".format(group=group) )
         sys.stdout.flush()
         send_email("group does not exist",\
-                   "For {submission_file} group {group} does not exist.".format(submission_file=submission_file,group=group),\
+                   "For {submission_file} group {group} does not exist. Assuming External.".format(submission_file=submission_file,group=group),\
                    toaddr=email, 
                   EMAIL_TOKEN=config_dic["EMAIL_TOKEN"],
                   project_type=project_type)
-        sys.exit(1)
-    return True
+        return "External"
+        
+    else:
+        return "Internal"
 
 def check_project_exists(folder,config_dic,group,project_title, email):
     if os.path.isdir(folder):
