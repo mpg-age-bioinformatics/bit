@@ -103,7 +103,7 @@ def send_email(subject, body="", EMAIL_TOKEN=None, \
         part.add_header('Content-Disposition', "attachment; filename= %s" % report_file)
         msg.attach(part)
 
-    server = smtplib.SMTP_SSL('mail.age.mpg.de', 465)
+    server = smtplib.SMTP_SSL('mail.age.mpg.de', 587)
     server.login(fromaddr, EMAIL_TOKEN)
     text = msg.as_string()
     server.sendmail(fromaddr, toaddr, text)
