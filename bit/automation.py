@@ -134,10 +134,10 @@ def check_group(group,submission_file,email,config_dic):
                    toaddr=email, 
                   EMAIL_TOKEN=config_dic["EMAIL_TOKEN"],
                   project_type=project_type)
-        return "External"
+        return "bit_ext"
         
     else:
-        return "Internal"
+        return groups_dic[group]
 
 def check_project_exists(folder,config_dic,group,project_title, email):
     if os.path.isdir(folder):
