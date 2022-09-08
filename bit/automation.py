@@ -103,11 +103,18 @@ def send_email(subject, body="", EMAIL_TOKEN=None, \
         part.add_header('Content-Disposition', "attachment; filename= %s" % report_file)
         msg.attach(part)
 
-    server = smtplib.SMTP_SSL('mail.age.mpg.de', 587)
-    server.login(fromaddr, EMAIL_TOKEN)
-    text = msg.as_string()
-    server.sendmail(fromaddr, toaddr, text)
-    server.quit()
+#     server = smtplib.SMTP_SSL('mail.age.mpg.de', 587)
+#     server.login(fromaddr, EMAIL_TOKEN)
+#     text = msg.as_string()
+#     server.sendmail(fromaddr, toaddr, text)
+#     server.quit()
+    context = ssl.create_default_context()
+    with smtplib.SMTP("mail.age.mpg.de", 587) as server:
+        server.starttls(context=context)
+        server.login(fromaddr, EMAIL_TOKEN)
+        server.sendmail(fromaddr, toaddr, text)
+#     server.quit()
+#     print( f'Email sent to {", ".join(toaddr)}' )
     print( "Email sent to {toaddr}".format(toaddr=', '.join(toaddr) ) )
     sys.stdout.flush()
     
