@@ -143,10 +143,14 @@ def check_group(group,submission_file,email,project_type,config_dic):
         #           EMAIL_TOKEN=config_dic["EMAIL_TOKEN"],
         #           project_type=project_type)
 
-        user_domain=user_domain.split("@")[-1]
-        mps_domain="mpg.de"
-        if ( user_domain[-len(mps_domain):] == mps_domain ) :
-            return user_domain.split(".mpg.de")[0]
+        user_domain=[ s for s in email if "mpg.de" in s ]
+        if user_domain:
+
+            user_domain=user_domain[0].split("@")[-1]
+            mps_domain="mpg.de"
+            if ( user_domain[-len(mps_domain):] == mps_domain ) :
+                return user_domain.split(".mpg.de")[0]
+                
         return "bit_ext"
         
     else:
