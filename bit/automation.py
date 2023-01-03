@@ -137,11 +137,16 @@ def check_group(group,submission_file,email,project_type,config_dic):
     if group not in list(groups_dic.keys()):
         print("Group {group} does not exist.".format(group=group) )
         sys.stdout.flush()
-        send_email("group does not exist",\
-                   "For {submission_file} group {group} does not exist. Assuming External.".format(submission_file=submission_file,group=group),\
-                   toaddr=email, 
-                  EMAIL_TOKEN=config_dic["EMAIL_TOKEN"],
-                  project_type=project_type)
+        # send_email("group does not exist",\
+        #            "For {submission_file} group {group} does not exist. Assuming External.".format(submission_file=submission_file,group=group),\
+        #            toaddr=[], 
+        #           EMAIL_TOKEN=config_dic["EMAIL_TOKEN"],
+        #           project_type=project_type)
+
+        user_domain=user_domain.split("@")[-1]
+        mps_domain="mpg.de"
+        if ( user_domain[-len(mps_domain):] == mps_domain ) :
+            return user_domain.split(".mpg.de")[0]
         return "bit_ext"
         
     else:
