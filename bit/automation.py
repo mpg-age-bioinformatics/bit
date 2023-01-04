@@ -144,12 +144,18 @@ def check_group(group,submission_file,email,project_type,config_dic):
         #           project_type=project_type)
 
         user_domain=[ s for s in email if "mpg.de" in s ]
+        print(1, user_domain)
+        sys.stdout.flush()
         if user_domain:
+            print(2, user_domain)
+            sys.stdout.flush()
 
             user_domain=user_domain[0].split("@")[-1]
             mps_domain="mpg.de"
+
+            print(3, user_domain, mps_domain)
             if ( user_domain[-len(mps_domain):] == mps_domain ) :
-                print("Retrieving group: {group}".format(group=group) )
+                print(4, "Retrieving group: {group}".format(group=group) )
                 sys.stdout.flush()
                 return user_domain.split(".mpg.de")[0]
 
