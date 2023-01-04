@@ -143,6 +143,7 @@ def check_group(group,submission_file,email,project_type,config_dic):
         #           EMAIL_TOKEN=config_dic["EMAIL_TOKEN"],
         #           project_type=project_type)
 
+        print(0, email)
         user_domain=[ s for s in email if "mpg.de" in s ]
         print(1, user_domain)
         sys.stdout.flush()
