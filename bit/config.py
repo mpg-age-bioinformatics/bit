@@ -143,6 +143,8 @@ def read_bitconfig(showit=None,bit_config=".bit_config"):
     uhome=expanduser("~")+"/"
     with open(uhome+bit_config, 'r') as configfile:
         configdic=json.load(configfile)
+    if "code_path" not in list(configdic.keys()) :
+        configdic["code_path"]=os.path.abspath(configdic["local_path"])
     if showit:
         for c in configdic:
             if "pass" not in c:
@@ -154,6 +156,7 @@ def read_bitconfig(showit=None,bit_config=".bit_config"):
             else:
                 print(c, "*")
                 sys.stdout.flush()
+
     return configdic
 
 def check_reqs(requirements,configdic,config_file=None, gitssh=None):
@@ -181,18 +184,21 @@ def check_reqs(requirements,configdic,config_file=None, gitssh=None):
         configdic["user_group"]=get_user_group()
     return configdic
 
-def init_user(path_to_project,github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):
+def init_user(path_to_project,path_to_code,github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):
     user_name=getpass.getuser()
-    if not os.path.exists(path_to_project):
-        os.makedirs(path_to_project)
-    response=git.git_clone(path_to_project+"/scripts."+user_name , github_address, github_organization, github_repo, github_user=github_user, github_pass=github_pass, gitssh=gitssh)
-    response=git.git_clone(path_to_project+"/wiki."+user_name , github_address, github_organization, github_repo+".wiki", github_user=github_user, github_pass=github_pass, gitssh=gitssh)
+    for p in [ path_to_project, path_to_code ] :
+        if not os.path.exists( p ):
+            os.makedirs( p )
+    
+    response=git.git_clone(path_to_code+"/scripts."+user_name , github_address, github_organization, github_repo, github_user=github_user, github_pass=github_pass, gitssh=gitssh)
+    response=git.git_clone(path_to_code+"/wiki."+user_name , github_address, github_organization, github_repo+".wiki", github_user=github_user, github_pass=github_pass, gitssh=gitssh)
     if response == 1:
-        input("\n\n*************\n\nThe wiki for this project has not yet been created.\n\n Please go to %s/%s/%s/wiki and click on 'Create the first page' and then 'Save Page'.\n\nPress Enter once you have saved the first wiki page.\n\nOtherwise press enter to skip wiki creation.\n\n*************\n\n" %(github_address,github_organization,github_repo) )
-        response=git.git_clone(path_to_project+"/wiki."+user_name ,github_address,github_organization,github_repo+".wiki",github_user=github_user,github_pass=github_pass,gitssh=gitssh)
-        if response == 1:
-            shutil.rmtree(path_to_project+"/wiki."+user_name, ignore_errors=True)
-            print("Skipping wiki creation.")
-            sys.stdout.flush()
+        print( "\n\n*************\n\Could not find wiki for project.\n\n*************\n\n" )
+        # input("\n\n*************\n\nThe wiki for this project has not yet been created.\n\n Please go to %s/%s/%s/wiki and click on 'Create the first page' and then 'Save Page'.\n\nPress Enter once you have saved the first wiki page.\n\nOtherwise press enter to skip wiki creation.\n\n*************\n\n" %(github_address,github_organization,github_repo) )
+        # response=git.git_clone(path_to_project+"/wiki."+user_name ,github_address,github_organization,github_repo+".wiki",github_user=github_user,github_pass=github_pass,gitssh=gitssh)
+        # if response == 1:
+        #     shutil.rmtree(path_to_project+"/wiki."+user_name, ignore_errors=True)
+        #     print("Skipping wiki creation.")
+        #     sys.stdout.flush()
     print("User initialized.")
     sys.stdout.flush()

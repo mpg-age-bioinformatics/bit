@@ -91,13 +91,15 @@ def main():
                 while configdic[r] == None:
                     configdic=config.check_reqs([r],configdic,config_file=None, gitssh=None)
         local_path=os.path.abspath(configdic["local_path"])
+        code_path=os.path.abspath(configdic["code_path"])
         full_path=os.path.abspath(args.start)
         project_name=os.path.basename(full_path)
+        path_to_code=os.path.join( code_path, "/".join(full_path.rsplit("/",2)[-2:]) )
 
         # check format projects_folder/group_head/project_name
-        if len(full_path.split("/")) != len(local_path.split("/"))+2:
-            print("The path (%s) to this project does not obey the structure and/or defined local path (%s). Check the reference structure:\n%s" \
-            %(full_path,local_path,config.structure) )
+        if ( full_path.rsplit("/",2)[0] != local_path ) and (full_path.rsplit("/",2)[0] != code_path ):
+            print("The path (%s) to this project does not obey the structure and/or defined local path (%s / %s). Check the reference structure:\n%s" \
+            %(full_path,local_path,code_path ,config.structure) )
             sys.stdout.flush()
             sys.exit(0)
 
@@ -129,7 +131,7 @@ def main():
         #input("\n\n*************\n\nPlease go to %s/%s/%s/wiki and click on 'Create the first page' and then 'Save Page'.\n\nPress Enter once you have saved the first wiki page.\n\n*************\n\n" \
         #%(configdic["github_address"],configdic["github_organization"],project_name) )
 
-        config.init_user(full_path,configdic["github_address"],configdic["github_organization"],\
+        config.init_user(full_path,path_to_code,configdic["github_address"],configdic["github_organization"],\
         project_name,github_user=configdic["github_user"],\
         github_pass=configdic["github_pass"],gitssh=args.gitnossh)
 
@@ -139,22 +141,24 @@ def main():
                 os.makedirs(full_path+"/"+f)
 
         if configdic["user_group"]:
-            os.chmod(full_path, stat.S_IRWXU)
             user_group=configdic["user_group"].split(",")
             try:
-                for use in user_group:
-                    call=["setfacl","-m","user:%s:rwx" %use,full_path]
-                    out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-                    prt=str(out.communicate()[0].decode('utf-8').rstrip())
-                    if prt:
-                        print(prt)
-                        sys.stdout.flush()
+                for u in user_group:
+                    for p in full_path, path_to_code :
+                        call=["setfacl","-m",f"u:{u}:rwx" , p]
+                        out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+                        prt=str(out.communicate()[0].decode('utf-8').rstrip())
+                        if prt:
+                            print(prt)
+                            sys.stdout.flush()
             except:
                 print("Failed to setfacls.")
                 sys.stdout.flush()
+        else:
+            os.chmod(full_path, stat.S_IRWXU)
 
-        local_path_owner=os.stat(local_path)
-        local_path_owner=local_path_owner.st_uid
+        # local_path_owner=os.stat(local_path)
+        # local_path_owner=local_path_owner.st_uid
         #os.chown(full_path,local_path_owner,-1)
 
         sys.exit(0)
@@ -165,6 +169,7 @@ def main():
             while configdic[r] == None:
                 configdic=config.check_reqs([r],configdic,config_file=None, gitssh=args.gitnossh)
         local_path=os.path.abspath(configdic["local_path"])
+        code_path=os.path.abspath(configdic["code_path"])
         if args.start:
             full_path=os.path.abspath(args.start)
         else:
@@ -172,12 +177,12 @@ def main():
         project_name=os.path.basename(full_path)
 
         # check format projects_folder/group_head/project_name
-        if len(full_path.split("/")) != len(local_path.split("/"))+2:
+        if ( full_path.rsplit("/",2)[0] != local_path ) and (full_path.rsplit("/",2)[0] != code_path ) : 
             print("The path (%s) to this project does not obey the structure and/or defined local path (%s). Check the reference structure:\n%s" %(full_path,local_path,config.structure))
             sys.stdout.flush()
             sys.exit(0)
 
-        config.init_user(full_path,configdic["github_address"],configdic["github_organization"],project_name,github_user=configdic["github_user"],github_pass=configdic["github_pass"],gitssh=args.gitnossh)
+        config.init_user(full_path,code_path,configdic["github_address"],configdic["github_organization"],project_name,github_user=configdic["github_user"],github_pass=configdic["github_pass"],gitssh=args.gitnossh)
         sys.exit(0)
 
     if args.input:

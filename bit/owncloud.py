@@ -106,18 +106,22 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
                     gitssh=gitssh)
 
     local_path=os.path.abspath(configdic["local_path"])
+    code_path=os.path.abspath(configdic["code_path"])
 
     # check if files all come from the same project folder
-    size_local=len(local_path.split("/"))
     parent_folder=[]
     check_project=[]
     for i in input_files:
         f=os.path.abspath(i)
+        if local_path in f :
+            size_local=len(local_path.split("/"))
+        elif code_path in f:
+            size_local=len(local_path.split("/"))
         parent_folder.append(f.split("/")[size_local])
         check_project.append(f.split("/")[size_local+1])
     check_project=list(set(check_project))
     if len(check_project) > 1:
-        print("Found more than one project:\n")
+        print("Found more than one path to project:\n")
         for p in check_project:
             print(p)
             sys.stdout.flush()
@@ -191,8 +195,8 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
     print("Logging changes..")
     sys.stdout.flush()
     user_name=getpass.getuser()
-    wikidir=local_path+"/"+target_project+"/wiki."+user_name
-    scriptsdir=local_path+"/"+target_project+"/scripts."+user_name
+    wikidir=code_path+"/"+target_project+"/wiki."+user_name
+    scriptsdir=code_path+"/"+target_project+"/scripts."+user_name
     if os.path.isdir(wikidir):
         logdir=wikidir
         log_project=project_name+".wiki"
@@ -236,7 +240,7 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
     if scripts:
         print("Syncronizing your code..")
         sys.stdout.flush()
-        os.chdir(local_path+"/"+target_project+"/scripts."+user_name)
+        os.chdir(code_path+"/"+target_project+"/scripts."+user_name)
         #files_to_add=os.listdir(local_path+"/"+target_project+"/scripts."+user_name)
         #git.git_sync(files_to_add,message,configdic["github_address"],\
         git.git_sync(["-A"],message,configdic["github_address"],\
