@@ -106,6 +106,7 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
                     gitssh=gitssh)
 
     local_path=os.path.abspath(configdic["local_path"])
+    automation_path=os.path.abspath(configdic["automation_path"])
     code_path=os.path.abspath(configdic["code_path"])
 
     # check if files all come from the same project folder
@@ -114,6 +115,8 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
     for i in input_files:
         f=os.path.abspath(i)
         if local_path in f :
+            size_local=len(local_path.split("/"))
+        elif automation_path in f:
             size_local=len(local_path.split("/"))
         elif code_path in f:
             size_local=len(local_path.split("/"))

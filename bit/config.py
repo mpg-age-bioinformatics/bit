@@ -145,6 +145,8 @@ def read_bitconfig(showit=None,bit_config=".bit_config"):
         configdic=json.load(configfile)
     if "code_path" not in list(configdic.keys()) :
         configdic["code_path"]=os.path.abspath(configdic["local_path"])
+    if "automation_path" not in list(configdic.keys()) :
+        configdic["automation_path"]=os.path.abspath(configdic["local_path"])
     if showit:
         for c in configdic:
             if "pass" not in c:
@@ -184,9 +186,9 @@ def check_reqs(requirements,configdic,config_file=None, gitssh=None):
         configdic["user_group"]=get_user_group()
     return configdic
 
-def init_user(path_to_project,path_to_code,github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):
+def init_user(path_to_project,automation_path,path_to_code,github_address,github_organization,github_repo,github_user=None,github_pass=None,gitssh=None):
     user_name=getpass.getuser()
-    for p in [ path_to_project, path_to_code ] :
+    for p in [ path_to_project, path_to_code, automation_path ] :
         if not os.path.exists( p ):
             os.makedirs( p )
     
