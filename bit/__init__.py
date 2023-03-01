@@ -99,12 +99,13 @@ def main():
             full_path=f"{local_path}{full_path}"
         project_name=os.path.basename(full_path)
         path_to_code=os.path.join( code_path, "/".join(full_path.rsplit("/",2)[-2:]) )
+        path_to_automation=os.path.join( automation_path, "/".join(full_path.rsplit("/",2)[-2:]) )
 
 
         # check format projects_folder/group_head/project_name
-        if ( full_path.rsplit("/",2)[0] != local_path ) and ( automation_path.rsplit("/",2)[0] != local_path ) and (full_path.rsplit("/",2)[0] != code_path ):
+        if ( full_path.rsplit("/",2)[0] != local_path ) and ( path_to_automation.rsplit("/",2)[0] != automation_path ) and (full_path.rsplit("/",2)[0] != code_path ):
             print("The path (%s) to this project does not obey the structure and/or defined local path (%s / %s). Check the reference structure:\n%s" \
-            %(full_path,local_path,code_path ,config.structure) )
+            %(full_path,path_to_automation,code_path ,config.structure) )
             sys.stdout.flush()
             sys.exit(0)
 
@@ -136,7 +137,7 @@ def main():
         #input("\n\n*************\n\nPlease go to %s/%s/%s/wiki and click on 'Create the first page' and then 'Save Page'.\n\nPress Enter once you have saved the first wiki page.\n\n*************\n\n" \
         #%(configdic["github_address"],configdic["github_organization"],project_name) )
 
-        config.init_user(full_path,automation_path,path_to_code,configdic["github_address"],configdic["github_organization"],\
+        config.init_user(full_path,path_to_automation,path_to_code,configdic["github_address"],configdic["github_organization"],\
         project_name,github_user=configdic["github_user"],\
         github_pass=configdic["github_pass"],gitssh=args.gitnossh)
 
@@ -149,7 +150,7 @@ def main():
             user_group=configdic["user_group"].split(",")
             try:
                 for u in user_group:
-                    for p in full_path, path_to_code :
+                    for p in full_path, path_to_code, path_to_automation :
                         call=["setfacl","-m",f"u:{u}:rwx" , p]
                         out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
                         prt=str(out.communicate()[0].decode('utf-8').rstrip())
@@ -177,8 +178,6 @@ def main():
         automation_path=os.path.abspath(configdic["automation_path"])
         code_path=os.path.abspath(configdic["code_path"])
 
-        path_to_code=os.path.join( code_path, "/".join(full_path.rsplit("/",2)[-2:]) )
-
 
         if args.start:
             full_path=os.path.abspath(args.start)
@@ -186,13 +185,16 @@ def main():
             full_path=os.path.abspath(os.getcwd())
         project_name=os.path.basename(full_path)
 
+        path_to_code=os.path.join( code_path, "/".join(full_path.rsplit("/",2)[-2:]) )
+        path_to_automation=os.path.join( automation_path, "/".join(full_path.rsplit("/",2)[-2:]) )
+
         # check format projects_folder/group_head/project_name
         if ( full_path.rsplit("/",2)[0] != local_path ) and ( full_path.rsplit("/",2)[0] != automation_path ) and (full_path.rsplit("/",2)[0] != code_path ) : 
             print("The path (%s) to this project does not obey the structure and/or defined local path (%s). Check the reference structure:\n%s" %(full_path,local_path,config.structure))
             sys.stdout.flush()
             sys.exit(0)
 
-        config.init_user(full_path,automation_path,path_to_code,configdic["github_address"],configdic["github_organization"],project_name,github_user=configdic["github_user"],github_pass=configdic["github_pass"],gitssh=args.gitnossh)
+        config.init_user(full_path,path_to_automation,path_to_code,configdic["github_address"],configdic["github_organization"],project_name,github_user=configdic["github_user"],github_pass=configdic["github_pass"],gitssh=args.gitnossh)
         sys.exit(0)
 
     if args.input:
