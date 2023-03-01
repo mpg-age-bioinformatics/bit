@@ -100,6 +100,7 @@ def main():
         project_name=os.path.basename(full_path)
         path_to_code=os.path.join( code_path, "/".join(full_path.rsplit("/",2)[-2:]) )
 
+
         # check format projects_folder/group_head/project_name
         if ( full_path.rsplit("/",2)[0] != local_path ) and ( automation_path.rsplit("/",2)[0] != local_path ) and (full_path.rsplit("/",2)[0] != code_path ):
             print("The path (%s) to this project does not obey the structure and/or defined local path (%s / %s). Check the reference structure:\n%s" \
@@ -188,7 +189,7 @@ def main():
             sys.stdout.flush()
             sys.exit(0)
 
-        config.init_user(full_path,automation_path,code_path,configdic["github_address"],configdic["github_organization"],project_name,github_user=configdic["github_user"],github_pass=configdic["github_pass"],gitssh=args.gitnossh)
+        config.init_user(full_path,automation_path,path_to_code,configdic["github_address"],configdic["github_organization"],project_name,github_user=configdic["github_user"],github_pass=configdic["github_pass"],gitssh=args.gitnossh)
         sys.exit(0)
 
     if args.input:
