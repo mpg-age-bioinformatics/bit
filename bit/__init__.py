@@ -177,6 +177,9 @@ def main():
         automation_path=os.path.abspath(configdic["automation_path"])
         code_path=os.path.abspath(configdic["code_path"])
 
+        path_to_code=os.path.join( code_path, "/".join(full_path.rsplit("/",2)[-2:]) )
+
+
         if args.start:
             full_path=os.path.abspath(args.start)
         else:
