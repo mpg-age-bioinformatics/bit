@@ -96,7 +96,7 @@ def main():
         full_path=os.path.abspath(args.start)
         if code_path in full_path:
             full_path=full_path.split(code_path)[-1]
-            full_path=f"{local_path}/{full_path}"
+            full_path=f"{local_path}{full_path}"
         project_name=os.path.basename(full_path)
         path_to_code=os.path.join( code_path, "/".join(full_path.rsplit("/",2)[-2:]) )
 
