@@ -117,9 +117,9 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
         if local_path in f :
             size_local=len(local_path.split("/"))
         elif automation_path in f:
-            size_local=len(local_path.split("/"))
+            size_local=len(automation_path.split("/"))
         elif code_path in f:
-            size_local=len(local_path.split("/"))
+            size_local=len(code_path.split("/"))
         parent_folder.append(f.split("/")[size_local])
         check_project.append(f.split("/")[size_local+1])
     check_project=list(set(check_project))
