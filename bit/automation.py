@@ -408,9 +408,10 @@ def main():
     parser.add_argument("-p", "--project", help="Project type. eg. RNAseq.", default="empty")
     parser.add_argument("-t", "--to", help="Receivers.",default=None)
     parser.add_argument("-l", "--link", help="Link to results.",default=None)
+    parser.add_argument("-c", "--config", help="Path to automation config file.",default=None)
     args = parser.parse_args()
 
-    config_dic=read_config()
+    config_dic=read_config(args.config)
 
     if args.link:
         body="Hi,\n\nyou can find the results for this project here:\n\n{link}\n\nThis is an automatically generated email.".format(link=args.link)
