@@ -146,22 +146,22 @@ def main():
             if not os.path.exists(full_path+"/"+f):
                 os.makedirs(full_path+"/"+f)
 
-        if configdic["user_group"]:
-            user_group=configdic["user_group"].split(",")
-            try:
-                for u in user_group:
-                    for p in full_path, path_to_code, path_to_automation :
-                        call=["setfacl","-m",f"u:{u}:rwx" , p]
-                        out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-                        prt=str(out.communicate()[0].decode('utf-8').rstrip())
-                        if prt:
-                            print(prt)
-                            sys.stdout.flush()
-            except:
-                print("Failed to setfacls.")
-                sys.stdout.flush()
-        else:
-            os.chmod(full_path, stat.S_IRWXU)
+        # if configdic["user_group"]:
+        #     user_group=configdic["user_group"].split(",")
+        #     try:
+        #         for u in user_group:
+        #             for p in full_path, path_to_code, path_to_automation :
+        #                 call=["setfacl","-m",f"u:{u}:rwx" , p]
+        #                 out=Popen(call, stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+        #                 prt=str(out.communicate()[0].decode('utf-8').rstrip())
+        #                 if prt:
+        #                     print(prt)
+        #                     sys.stdout.flush()
+        #     except:
+        #         print("Failed to setfacls.")
+        #         sys.stdout.flush()
+        # else:
+        os.chmod(full_path, stat.S_IRWXU)
 
         # local_path_owner=os.stat(local_path)
         # local_path_owner=local_path_owner.st_uid
