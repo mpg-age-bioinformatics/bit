@@ -305,12 +305,12 @@ def git_clone(local_name,github_repo, team_members=None):
     out=subprocess.call(['git','clone',git, local_name ])
     # if not os.path.exists(local_name):
     #     os.makedirs(local_name)
-    if team_members:
-        for t in team_members.split(","):
-            out=subprocess.call(['setfacl', '-Rdm', f'u:{t}:rx', local_name ])
-    else:
-        out=subprocess.call(['setfacl', '-Rdm', 'g:group_bit:rx', local_name ])
-        out=subprocess.call(['chmod', '-R','g+r', local_name ])
+    #if team_members:
+    #    for t in team_members.split(","):
+    #        out=subprocess.call(['setfacl', '-Rdm', f'u:{t}:rx', local_name ])
+    #else:
+    #out=subprocess.call(['setfacl', '-Rdm', 'g:group_bit:rx', local_name ])
+    out=subprocess.call(['chmod', '-R','g+r', local_name ])
     # os.chdir(cwd)
     return out
 
