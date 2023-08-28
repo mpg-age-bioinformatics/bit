@@ -188,16 +188,16 @@ def rsync_to(sshLogin,rsync_files,forceImport=None,sync_to=True,sync_from=False)
     create_subfolders=[ ff for ff in subfolders if ff not in remote_path ]
     create_subfolders=" ".join(create_subfolders)
 
-    if remote_config["user_group"]:
-        remote_group=" ".join(remote_config["user_group"])
-        remote_group_group="; chmod 700 "+remote_path+parent_folder+" ; for us in "\
-        +remote_group+" ; do setfacl -m user:${us}:rwx "+remote_path+parent_folder+" ; done "
+    # if remote_config["user_group"]:
+    #     remote_group=" ".join(remote_config["user_group"])
+    #     remote_group_group="; chmod 700 "+remote_path+parent_folder+" ; for us in "\
+    #     +remote_group+" ; do setfacl -m user:${us}:rwx "+remote_path+parent_folder+" ; done "
 
-        remote_group_project="; chmod 700 "+path_to_project+" ; for us in "\
-        +remote_group+" ; do setfacl -m user:${us}:rwx "+path_to_project+" ; done "
-    else:
-        remote_group_group="; echo Not_using_acls "
-        remote_group_project="; echo Not_using_acls "
+    #     remote_group_project="; chmod 700 "+path_to_project+" ; for us in "\
+    #     +remote_group+" ; do setfacl -m user:${us}:rwx "+path_to_project+" ; done "
+    # else:
+    remote_group_group="; echo Not_using_acls "
+    remote_group_project="; echo Not_using_acls "
 
     create_subfolders="\'MANAGER=$(ls -ld "+remote_path+" | awk \"{ print \\$3 }\" ); \
     if [ ! -d "+remote_path+"/"+parent_folder+" ]; then mkdir -p "+remote_path+"/"+\
