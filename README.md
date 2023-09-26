@@ -93,6 +93,12 @@ cd bit
 python setup.py install -f --user
 ```
 
+or
+
+```
+pip3 install git+git@github.com:mpg-age-bioinformatics/bit.git --user
+```
+
 ###### Dependencies
 
 * [git](https://git-scm.com)
