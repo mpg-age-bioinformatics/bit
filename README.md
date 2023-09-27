@@ -96,7 +96,7 @@ python setup.py install -f --user
 or
 
 ```
-pip3 install git+git@github.com:mpg-age-bioinformatics/bit.git --user
+pip3 install git+https://github.com/mpg-age-bioinformatics/bit.git --user
 ```
 
 ###### Dependencies
