@@ -37,7 +37,9 @@ groups_dic={"Adam_Antebi":"AA",\
 "Proteomics":"Prot",\
 "Ron_Jachimowicz":"RJ",\
 "Sara_Wickstroem":"SW",\
-"Thomas_Langer":"TL"}
+"Stephanie_Panier":"SP",\
+"Thomas_Langer":"TL",\
+"Zachary_Frentz":"ZF"}
 
 def isnotebook():
     try:
