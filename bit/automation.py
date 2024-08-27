@@ -40,7 +40,7 @@ groups_dic={"Adam_Antebi":"AA",\
 "Stephanie_Panier":"SP",\
 "Thomas_Langer":"TL",\
 "Zachary_Frentz":"ZF",\
-"Hansgeorg_Sprenger":"HS",\
+"Hans_Sprenger":"HS",\
 "Hannah_Scheiblich":"HSc"}
 
 def isnotebook():
