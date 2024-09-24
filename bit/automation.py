@@ -274,28 +274,145 @@ def make_github_issue(title, repo_name, user, token, config_dic, body=None, assi
         sys.exit(1)
     return response
 
-def make_github_card(make_issue_response, repo_name, user, token, config_dic, column=301):
+### Depreciated function using rest api
+# def make_github_card(make_issue_response, repo_name, user, token, config_dic, column=301):
+#     '''Create an card for an issue on github.com using the given parameters.'''
+#     # Our url to create issues via POST
+#     url = f'https://github.molgen.mpg.de/api/v3/projects/columns/{column}/cards'
+#     issue_response=json.loads(make_issue_response.text)
+#     issue_id=issue_response["id"]
+#     card = {'content_id': issue_id,\
+#             "content_type":"Issue"}
+#     # Add the issue to our repository
+#     response = requests.post( url, data=json.dumps(card), headers={"Accept": "application/vnd.github.inertia-preview+json"}, auth=( user, token ))#, headers=headers)
+    
+#     if response.status_code == 201:
+#         print('Successfully created card.' )
+#     else:
+#         print('Could not create card.')
+#         print('Response:', response.content)
+#         print(response.text)
+#         send_email("[{repo}] could not create card".format(repo=repo_name), 
+#                         config_dic=config_dic)
+#         sys.stdout.flush()
+#         sys.exit(1)
+#     return response
+
+def make_github_card(make_issue_response, repo_name, project_id, token, config_dic, column="automation"):
     '''Create an card for an issue on github.com using the given parameters.'''
     # Our url to create issues via POST
-    url = f'https://github.molgen.mpg.de/api/v3/projects/columns/{column}/cards'
+    graphql_url = f'{config_dic["github_address"]}/api/graphql'
     issue_response=json.loads(make_issue_response.text)
-    issue_id=issue_response["id"]
-    card = {'content_id': issue_id,\
-            "content_type":"Issue"}
-    # Add the issue to our repository
-    response = requests.post( url, data=json.dumps(card), headers={"Accept": "application/vnd.github.inertia-preview+json"}, auth=( user, token ))#, headers=headers)
+    issue_id=issue_response["node_id"]
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
     
-    if response.status_code == 201:
+    # Mutation to add the issue to the project
+    add_issue_to_project_query = """
+    mutation($projectId: ID!, $contentId: ID!) {
+    addProjectV2ItemById(input: {projectId: $projectId, contentId: $contentId}) {
+        item {
+        id
+        }
+    }
+    }
+    """
+
+    add_issue_variables = {
+        "projectId": project_id,
+        "contentId": issue_id
+    }
+
+    # Make the request to add the issue to the project
+    card_response = requests.post(graphql_url, headers=headers, json={
+        "query": add_issue_to_project_query,
+        "variables": add_issue_variables
+    })
+    
+    if card_response.status_code == 200:
+        project_card_id = card_response.json()['data']['addProjectV2ItemById']['item']['id']
         print('Successfully created card.' )
+
+        # Get required IDs
+        id_query = """
+        {
+        node(id: "%s") {
+            ... on ProjectV2 {
+            fields(first: 20) {
+                nodes {
+                __typename
+                ... on ProjectV2SingleSelectField {
+                    id
+                    name
+                    options {
+                    id
+                    name
+                    }
+                }
+                }
+            }
+            }
+        }
+        }
+        """ % project_id
+
+        id_response = requests.post(graphql_url, headers=headers, json={"query": id_query})
+        id_data = id_response.json()
+        status_field_id = None
+        column_id = None
+
+        for field in id_data['data']['node']['fields']['nodes']:
+            if field.get('name') == 'Status':
+                status_field_id = field['id']
+                for option in field['options']:
+                    if option.get('name') == column:
+                        column_id = option['id']
+                        break
+
+        # Update the issue's status in the project
+        update_issue_status_query = """
+        mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $valueId: String!) {
+        updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: {singleSelectOptionId: $valueId}}) {
+            projectV2Item {
+            id
+            }
+        }
+        }
+        """
+
+        update_status_variables = {
+            "projectId": project_id,
+            "itemId": project_card_id,
+            "fieldId": status_field_id,
+            "valueId": column_id
+        }
+
+        # Make the request to update the status of the issue in the project
+        status_response = requests.post(graphql_url, headers=headers, json={
+            "query": update_issue_status_query,
+            "variables": update_status_variables
+        })
+
+        if status_response.status_code == 200:
+            print(f"Card status updated successfully")
+        else:
+            print('Could not assign card to column.')
+            print('Response:', status_response.content)
+            print(status_response.text)
+            return status_response
+
     else:
         print('Could not create card.')
-        print('Response:', response.content)
-        print(response.text)
+        print('Response:', card_response.content)
+        print(card_response.text)
         send_email("[{repo}] could not create card".format(repo=repo_name), 
                         config_dic=config_dic)
         sys.stdout.flush()
         sys.exit(1)
-    return response
+        
+    return card_response
 
 def git_clone(local_name,github_repo, team_members=None):
     git="git@github.molgen.mpg.de:mpg-age-bioinformatics/{github_repo}.git".format(github_repo=github_repo)
