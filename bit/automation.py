@@ -75,9 +75,12 @@ def send_email(subject, body="", EMAIL_TOKEN=None, \
                toaddr=[],\
                fromaddr="automation@age.mpg.de",\
                project_type=None,\
-               config_dic=None):
+               config_dic=None,\
+               EMAIL_USERNAME=None):
     if not EMAIL_TOKEN:
         EMAIL_TOKEN=config_dic["EMAIL_TOKEN"]
+    if not EMAIL_USERNAME:
+        EMAIL_USERNAME=config_dic["EMAIL_USERNAME"]
     if not project_type:
         project_type="["+config_dic["project_type"]+"]"
     elif project_type=="empty":
@@ -113,9 +116,9 @@ def send_email(subject, body="", EMAIL_TOKEN=None, \
 #     server.sendmail(fromaddr, toaddr, text)
 #     server.quit()
     context = ssl.create_default_context()
-    with smtplib.SMTP("mail.age.mpg.de", 587) as server:
+    with smtplib.SMTP("mail.ox.gwdg.de", 587) as server:
         server.starttls(context=context)
-        server.login(fromaddr, EMAIL_TOKEN)
+        server.login(EMAIL_USERNAME, EMAIL_TOKEN)
         text = msg.as_string()
         server.sendmail(fromaddr, toaddr, text)
 #     server.quit()
