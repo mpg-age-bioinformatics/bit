@@ -130,7 +130,7 @@ def main():
 
         response =  git.make_github_repo(github_api, project_name, configdic)
         response =  git.make_github_issue(github_api, project_name, project_name, configdic, configdic["github_user"] )
-        response =  git.make_github_card(response, github_api, configdic, "77")
+        # response =  git.make_github_card(response, github_api, configdic, "77")
 
         # !!removing the need for wiki!!
         # clone the repo and the wiki by initiating this user
