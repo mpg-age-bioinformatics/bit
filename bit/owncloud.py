@@ -6,10 +6,11 @@ import datetime
 import os
 import sys
 import getpass
+import shutil
 
 import bit.config as config
 import bit.git as git
-import bit._owncloud as owncloud
+from nc_py_api import Nextcloud
 
 def list_upload(base_destination,list_of_files):
     upload_dic={}
@@ -48,15 +49,16 @@ def list_upload(base_destination,list_of_files):
 
     return upload_dic, subfolders
 
-def get_ownCloud_links(link_info,http):
-    link_info=str(link_info)
-    store=link_info.split("path=")[1].split(",")[0]
-    store=store.split("/")
-    store="%2F".join(store)
-    link=link_info.split("url=")[1].split(",")[0]
-    print("\nYour link:\n%s" %http+"/index.php/apps/files?dir="+store)
-    print("Public link:\n%s\n" %link)
-    return http+"/index.php/apps/files?dir="+store
+def get_ownCloud_links(link_info, http):
+    from urllib.parse import quote
+    path = link_info.get("path", "").lstrip("/")
+    url = link_info.get("url", "")
+    store = quote(path)
+    private_link = f"{http}/index.php/apps/files?dir=/{store}"
+
+    print("\nYour link:\n%s" % private_link)
+    print("Public link:\n%s\n" % url)
+    return private_link
 
 def get_owncloud_base_folder(configdic,project_name,getfolder=None,pick_a_date=None,create_folder=None,subfolder=None):
 
@@ -139,21 +141,25 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
 
     upload_dic, subfolders=list_upload(base_destination,input_files)
 
-    # login to owncloud
+    # login to owncloud/nextcloud
     try:
-        oc=owncloud.Client(configdic["owncloud_address"])
-        oc.login(configdic["owncloud_user"],configdic["owncloud_pass"])
+        nc = Nextcloud(nextcloud_url=configdic["owncloud_address"], nc_auth_user=configdic["owncloud_user"], nc_auth_pass=configdic["owncloud_pass"])
     except:
-        print("Could not login to ownCloud.\nPlease make sure you are giving \
-        the right address to your owncloud and using the right login credentials.")
+        print("Could not login to Cloud.\nPlease make sure you are giving \
+        the right address to your Cloud and using the right login credentials.")
         sys.exit(0)
 
     # create required subfolders in ownCloud
     for fold in subfolders:
+        parent = os.path.dirname(fold)
+        name = os.path.basename(fold)
         try:
-            oc.file_info(fold)
-        except:
-            oc.mkdir(fold)
+            entries = nc.files.listdir(parent)
+            if name not in [e.name for e in entries if e.is_dir]:
+                nc.files.mkdir(fold)
+        except Exception as e:
+            print(f"Failed checking/creating {fold}: {e}")
+
 
     # Upload files
     if len(upload_dic)>1:
@@ -165,23 +171,16 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
 
     skipped_files=[]
     for f in upload_dic:
-        file_handle = open(f, 'r', 8192)
-        file_handle.seek(0, os.SEEK_END)
-        size = file_handle.tell()
-        file_handle.seek(0)
-        if size == 0:
-            skipped_files.append(os.path.basename(f))
-            print("\t%s is empty. Skipping .. " %str(f))
-            sys.stdout.flush()
-            continue
-        if size > 1879048192:
-            print("\t%s\t(chunked)" %str(upload_dic[f]))
-            sys.stdout.flush()
-            oc.put_file(upload_dic[f],f)
-        else:
-            print("\t%s" %str(upload_dic[f]))
-            sys.stdout.flush()
-            oc.put_file(upload_dic[f],f,chunked=False)
+        with open(f, 'rb') as file_handle:
+            file_handle.seek(0, os.SEEK_END)
+            size = file_handle.tell()
+            file_handle.seek(0)
+            if size == 0:
+                skipped_files.append(os.path.basename(f))
+                print(f"\t{f} is empty. Skipping .. ")
+                continue
+            print(f"\t{upload_dic[f]}")
+            nc.files.upload_stream(upload_dic[f], file_handle, chunk_size=50*1024*1024)
 
     print("Finished uploading.")
     # Time stamp for expiration date
@@ -189,10 +188,17 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
     tshare = tshare + datetime.timedelta(days=int(days_to_share))
     tshare = time.mktime(tshare.timetuple())
 
-    link_info = oc.share_file_with_link(base_destination,expiration=tshare)
+    share = nc.files.sharing.create(base_destination, share_type=3, permissions=1, expire_date=datetime.datetime.fromtimestamp(tshare))
+    raw_data = vars(share).get("_raw_data", {})
+    link_info = {
+        'id': raw_data.get("id"),
+        'path': raw_data.get("path"),
+        'url': raw_data.get("url"),
+        'token': raw_data.get("token")
+    }
     private_link=get_ownCloud_links(link_info,configdic["owncloud_address"])
 
-    oc.logout()
+    # nc.logout()
 
     # Go to wiki folder and make a git sync
     print("Logging changes..")
@@ -256,7 +262,7 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
             while configdic[r] == None:
                 configdic=config.check_reqs([r],configdic,config_file=None, \
                 gitssh=None)
-        publink=str(link_info).split("url=")[1].split(",")[0]
+        publink = link_info.get("url", "<no-url>")
         issueMSG="Public link: %s; Private link: %s; Commit message: %s" \
         %(publink, private_link,message)
         git.git_write_comment(issueMSG,config.get_github_api(configdic["github_address"]),\
@@ -267,81 +273,126 @@ downloadreqs=["owncloud_address","owncloud_upload_folder",\
 "owncloud_download_folder","owncloud_user",\
 "owncloud_pass","local_path"]
 
-def ownCloud_download(gitssh=None,pick_a_date=None):
-    configdic=config.read_bitconfig()
+
+def ownCloud_download(gitssh=None, pick_a_date=None):
+    configdic = config.read_bitconfig()
     for r in downloadreqs:
-        while configdic[r] == None:
-            configdic=config.check_reqs([r],configdic,config_file=None, \
-            gitssh=gitssh)
-    local_path=os.path.abspath(configdic["local_path"])
+        while configdic[r] is None:
+            configdic = config.check_reqs([r], configdic, config_file=None, gitssh=gitssh)
 
-    size_local=len(local_path.split("/"))
+    local_path = os.path.abspath(configdic["local_path"])
+    size_local = len(local_path.split("/"))
 
-    f=os.path.abspath(str(pick_a_date))
-    parent_folder=f.split("/")[size_local]
-    project_name=f.split("/")[size_local+1]
+    f = os.path.abspath(str(pick_a_date))
+    parent_folder = f.split("/")[size_local]
+    project_name = f.split("/")[size_local + 1]
 
-    target_project=parent_folder+"/"+project_name
+    target_project = parent_folder + "/" + project_name
+    base_destination = get_owncloud_base_folder(configdic, target_project, getfolder=True, pick_a_date=pick_a_date)
 
-    base_destination=get_owncloud_base_folder(configdic,target_project,getfolder=True, pick_a_date=pick_a_date)
-
-    # login to owncloud
     try:
-        oc=owncloud.Client(configdic["owncloud_address"] )
-        oc.login(configdic["owncloud_user"],configdic["owncloud_pass"])
-    except:
-        print("Could not login to ownCloud.\nPlease make sure you are giving \
-        the right address to your owncloud and using the right login credentials.")
+        nc = Nextcloud(
+            nextcloud_url=configdic["owncloud_address"],
+            nc_auth_user=configdic["owncloud_user"],
+            nc_auth_pass=configdic["owncloud_pass"]
+        )
+    except Exception as e:
+        print("Could not login to Cloud.\nPlease make sure you are giving \
+        the right address to your Cloud and using the right login credentials.")
         sys.exit(0)
+        sys.exit(1)
 
-    oc.get_directory_as_zip(base_destination, pick_a_date+".zip")
-    oc.logout()
-    print("Downloaded %s.zip" %pick_a_date)
+    download_dir = f"{pick_a_date}_download"
+    os.makedirs(download_dir, exist_ok=True)
+
+    try:
+        def download_recursive(remote_dir, local_dir):
+            os.makedirs(local_dir, exist_ok=True)
+            entries = nc.files.listdir(remote_dir)
+            for entry in entries:
+                remote_path = f"{remote_dir}/{entry.name}"
+                local_path = os.path.join(local_dir, entry.name)
+                if entry.is_dir:
+                    download_recursive(remote_path, local_path)
+                else:
+                    with open(local_path, "wb") as f_out:
+                        nc.files.download2stream(remote_path, f_out)
+
+        download_recursive(base_destination, download_dir)
+
+    except Exception as e:
+        print(f"Error downloading files: {e}")
+        shutil.rmtree(download_dir, ignore_errors=True)
+        sys.exit(1)
+
+
+    # Zip the folder
+    zip_filename = f"{pick_a_date}.zip"
+    shutil.make_archive(pick_a_date, 'zip', download_dir)
+    shutil.rmtree(download_dir)
+
+    print(f"Downloaded {zip_filename}")
     sys.stdout.flush()
 
-def ownCloud_create_folder(gitssh=None,pick_a_date=None,days_to_share=None):
-    configdic=config.read_bitconfig()
+
+
+def ownCloud_create_folder(gitssh=None, pick_a_date=None, days_to_share=None):
+    configdic = config.read_bitconfig()
     for r in downloadreqs:
-        while configdic[r] == None:
-            configdic=config.check_reqs([r],configdic,config_file=None, \
-            gitssh=gitssh)
-    local_path=os.path.abspath(configdic["local_path"])
+        while configdic[r] is None:
+            configdic = config.check_reqs([r], configdic, config_file=None, gitssh=gitssh)
 
-    size_local=len(local_path.split("/"))
+    local_path = os.path.abspath(configdic["local_path"])
+    size_local = len(local_path.split("/"))
 
-    f=os.path.abspath(str(pick_a_date))
-    parent_folder=f.split("/")[size_local]
-    project_name=f.split("/")[size_local+1]
+    f = os.path.abspath(str(pick_a_date))
+    parent_folder = f.split("/")[size_local]
+    project_name = f.split("/")[size_local + 1]
 
-    target_project=parent_folder+"/"+project_name
+    target_project = parent_folder + "/" + project_name
+    base_destination = get_owncloud_base_folder(configdic, target_project, create_folder=True, pick_a_date=pick_a_date)
 
-    base_destination=get_owncloud_base_folder(configdic,target_project,create_folder=True, pick_a_date=pick_a_date)
-
-    # login to owncloud
     try:
-        oc=owncloud.Client(configdic["owncloud_address"] )
-        oc.login(configdic["owncloud_user"],configdic["owncloud_pass"])
-    except:
-        print("Could not login to ownCloud.\nPlease make sure you are giving \
-        the right address to your owncloud and using the right login credentials.")
+        nc = Nextcloud(
+            nextcloud_url=configdic["owncloud_address"],
+            nc_auth_user=configdic["owncloud_user"],
+            nc_auth_pass=configdic["owncloud_pass"]
+        )
+    except Exception:
+        print("Could not login to Cloud.\nPlease make sure you are giving \
+        the right address to your Cloud and using the right login credentials.")
         sys.exit(0)
 
-    check=base_destination.split("/")
+    check = base_destination.strip("/").split("/")
     print(check)
-    for i in range(len(check)+1):
-        c="/".join(check[:i])
+    for i in range(1, len(check) + 1):
+        c = "/" + "/".join(check[:i])
         print(c)
+        parent = os.path.dirname(c)
+        name = os.path.basename(c)
         try:
-            oc.file_info(c)
-        except:
-            oc.mkdir(c)
+            entries = nc.files.listdir(parent)
+            if name not in [e.name for e in entries if e.is_dir]:
+                nc.files.mkdir(c)
+        except Exception as e:
+            print(f"Failed creating {c}: {e}")
 
-    # Time stamp for expiration date
-    tshare = datetime.date.today()
-    tshare = tshare + datetime.timedelta(days=int(days_to_share))
-    tshare = time.mktime(tshare.timetuple())
+    # Create a public upload-enabled share link
+    tshare = datetime.date.today() + datetime.timedelta(days=int(days_to_share))
+    expiration = datetime.datetime.fromtimestamp(time.mktime(tshare.timetuple()))
 
-    link_info = oc.share_file_with_link(base_destination,expiration=tshare,public_upload=True)
-    private_link=get_ownCloud_links(link_info,configdic["owncloud_address"])
+    share = nc.files.sharing.create(
+        base_destination,
+        share_type=3,  # public link
+        permissions=1 | 4,  # read + create (upload)
+        expire_date=expiration
+    )
 
-    oc.logout()
+    raw_data = vars(share).get("_raw_data", {})
+    link_info = {
+        'id': raw_data.get("id"),
+        'path': raw_data.get("path"),
+        'url': raw_data.get("url"),
+        'token': raw_data.get("token")
+    }
+    private_link = get_ownCloud_links(link_info, configdic["owncloud_address"])
