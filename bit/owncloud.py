@@ -11,6 +11,10 @@ import shutil
 import bit.config as config
 import bit.git as git
 from nc_py_api import Nextcloud
+import httpx
+
+timeout = httpx.Timeout(connect=30, read=600, write=600, pool=60)
+client = httpx.Client(timeout=timeout)
 
 def list_upload(base_destination,list_of_files):
     upload_dic={}
@@ -143,7 +147,7 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
 
     # login to owncloud/nextcloud
     try:
-        nc = Nextcloud(nextcloud_url=configdic["owncloud_address"], nc_auth_user=configdic["owncloud_user"], nc_auth_pass=configdic["owncloud_pass"])
+        nc = Nextcloud(nextcloud_url=configdic["owncloud_address"], nc_auth_user=configdic["owncloud_user"], nc_auth_pass=configdic["owncloud_pass"], session=client)
     except:
         print("Could not login to Cloud.\nPlease make sure you are giving \
         the right address to your Cloud and using the right login credentials.")
@@ -294,7 +298,8 @@ def ownCloud_download(gitssh=None, pick_a_date=None):
         nc = Nextcloud(
             nextcloud_url=configdic["owncloud_address"],
             nc_auth_user=configdic["owncloud_user"],
-            nc_auth_pass=configdic["owncloud_pass"]
+            nc_auth_pass=configdic["owncloud_pass"],
+            session=client
         )
     except Exception as e:
         print("Could not login to Cloud.\nPlease make sure you are giving \
@@ -356,7 +361,8 @@ def ownCloud_create_folder(gitssh=None, pick_a_date=None, days_to_share=None):
         nc = Nextcloud(
             nextcloud_url=configdic["owncloud_address"],
             nc_auth_user=configdic["owncloud_user"],
-            nc_auth_pass=configdic["owncloud_pass"]
+            nc_auth_pass=configdic["owncloud_pass"],
+            session=client
         )
     except Exception:
         print("Could not login to Cloud.\nPlease make sure you are giving \
