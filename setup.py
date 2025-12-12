@@ -8,7 +8,7 @@ setup(name = 'bit',
       author_email = 'bioinformatics@age.mpg.de',
       license = 'MIT',
       packages = [ 'bit' ],
-      install_requires = [ "requests >= 2.0.1","six", "xlrd==1.2.0", "openpyxl==3.0.5", "nc_py_api==0.20.2"],
+      install_requires = [ "requests >= 2.0.1", "six", "xlrd==1.2.0", "openpyxl>=3.0.5", "nc_py_api==0.20.2"],
       zip_safe = False,
       entry_points = {'console_scripts': ['bit=bit.__init__:main','mail=bit.automation:main']}
       )
