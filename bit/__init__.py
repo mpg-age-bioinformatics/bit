@@ -36,7 +36,9 @@ def main():
      and ownCloud for storing and exchanging data. It saves storage by avoiding versioning\
      of data while logging changes in associated git wikis.",\
     formatter_class = argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-i", "--input", nargs='*', help="Input files")
+    upload_group=parser.add_mutually_exclusive_group()
+    upload_group.add_argument("-i", "--input", nargs='*', help="Input files")
+    upload_group.add_argument("-I", "--input-list", "--input_list", dest="input_list", help="File with '<folder> <file>' upload entries. File paths may include glob patterns.", default=None)
     parser.add_argument("-s", "--subfolder", help="Subfolder to be created.", default=None)
     parser.add_argument("-m", "--message",nargs='*', help="Message to write on log file.", default=None)
     parser.add_argument("-d", "--pick_a_date", help="Pick an existing date folder to transfer data to/from. Format=YYYY-MM-DD", default=None)
@@ -197,11 +199,11 @@ def main():
         config.init_user(full_path,path_to_automation,path_to_code,configdic["github_address"],configdic["github_organization"],project_name,github_user=configdic["github_user"],github_pass=configdic["github_pass"],gitssh=args.gitnossh)
         sys.exit(0)
 
-    if args.input:
+    if args.input or args.input_list:
         if not args.message:
             print("ERROR\nYou need to use -m to leave a message in the logs.")
             sys.exit()
-        oc.ownCloud_upload(input_files=args.input,message=args.message,gitssh=args.gitnossh,days_to_share=args.days_to_share,scripts=args.scripts,issue=args.issue, subfolder=args.subfolder,pick_a_date=args.pick_a_date)
+        oc.ownCloud_upload(input_files=args.input,input_list=args.input_list,message=args.message,gitssh=args.gitnossh,days_to_share=args.days_to_share,scripts=args.scripts,issue=args.issue, subfolder=args.subfolder,pick_a_date=args.pick_a_date)
         sys.exit(0)
 
     if args.create_folder:

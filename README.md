@@ -77,6 +77,17 @@ bit -i file.tar.bz2 -m my first upload
 ```
 Upload a file to ownCloud, register the upload and https link to the data folder on the project's wiki, commit and push wiki to git. Returns a 21 days public link as well as a permanent private link to the data.
 
+Files can also be uploaded into named subfolders from a two-column list:
+```bash
+bit -I upload_list.txt -m my organized upload
+```
+
+Each line in `upload_list.txt` should contain the destination folder followed by the local file, directory, or glob pattern:
+```text
+QC /path/to/clean_results/qc/violin_qc_by_sample.pdf
+DGE_Visium /path/to/clean_results/dge/dge.*.xlsx
+```
+
 **_Bind data and code_**
 ```bash
 bit -i file.tar.bz2 --scripts --issue 5 -m my first upload
@@ -111,7 +122,7 @@ Once you have **bit** on your path you should run `bit --config` to generate a c
 #### Options
 
 ```
-usage: bit [-h] [-i [INPUT [INPUT ...]]] [-s SUBFOLDER]
+usage: bit [-h] [-i [INPUT [INPUT ...]] | -I INPUT_LIST] [-s SUBFOLDER]
            [-m [MESSAGE [MESSAGE ...]]] [-d PICK_A_DATE] [-c] [-g]
            [-t DAYS_TO_SHARE] [--issue ISSUE] [--scripts] [--start START]
            [--stdfolders [STDFOLDERS [STDFOLDERS ...]]] [--adduser]
@@ -128,6 +139,9 @@ optional arguments:
   -h, --help            show this help message and exit
   -i [INPUT [INPUT ...]], --input [INPUT [INPUT ...]]
                         Input files (default: None)
+  -I INPUT_LIST, --input-list INPUT_LIST, --input_list INPUT_LIST
+                        File with '<folder> <file>' upload entries. File paths
+                        may include glob patterns. (default: None)
   -s SUBFOLDER, --subfolder SUBFOLDER
                         Subfolder to be created. (default: None)
   -m [MESSAGE [MESSAGE ...]], --message [MESSAGE [MESSAGE ...]]

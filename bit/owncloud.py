@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 import time
 import datetime
+import glob
 import os
 import sys
 import getpass
@@ -53,6 +54,86 @@ def list_upload(base_destination,list_of_files):
 
     return upload_dic, subfolders
 
+def _get_upload_subfolders(base_destination):
+    subfolders=[base_destination]
+    check=base_destination.split("/")
+    for i in range(len(check)):
+        c="/".join(check[:i-len(check)])
+        subfolders.append(c)
+    return subfolders
+
+def _clean_upload_folder(folder):
+    folder=str(folder).strip().strip("/")
+    if folder in ["", ".", ".."] or "/.." in folder or "../" in folder:
+        print("Invalid upload folder in input list: %s" %folder)
+        sys.exit(1)
+    return folder
+
+def read_upload_list(input_list):
+    upload_entries=[]
+    missing_patterns=[]
+    with open(input_list) as handle:
+        for line_number, line in enumerate(handle, 1):
+            line=line.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts=line.split(None, 1)
+            if len(parts) != 2:
+                print("Invalid input list line %s: %s" %(line_number,line))
+                print("Expected format: <folder> <file>")
+                sys.exit(1)
+            folder=_clean_upload_folder(parts[0])
+            pattern=os.path.expanduser(parts[1].strip())
+            matches=glob.glob(pattern)
+            if matches:
+                for match in sorted(matches):
+                    upload_entries.append((folder, match))
+            else:
+                missing_patterns.append(pattern)
+    if missing_patterns:
+        print("Could not find files matching:")
+        for pattern in missing_patterns:
+            print(pattern)
+        sys.exit(1)
+    if not upload_entries:
+        print("No upload entries found in input list: %s" %input_list)
+        sys.exit(1)
+    return upload_entries
+
+def list_upload_from_entries(base_destination,upload_entries):
+    upload_dic={}
+    subfolders=_get_upload_subfolders(base_destination)
+
+    for folder, source in upload_entries:
+        upload_folder=base_destination+"/"+folder
+        full=os.path.abspath(source)
+        subfolders.append(upload_folder)
+        if os.path.isdir(full):
+            subfol=upload_folder+"/"+os.path.basename(full)
+            subfolders.append(subfol)
+            for root, directories, filenames in os.walk(full):
+                bad_dirs=[]
+                for directory in directories:
+                    if os.path.basename(directory)[0] != ".":
+                        subdir=os.path.join(root, directory).split(full)[-1]
+                        subdir=subfol+subdir
+                        subfolders.append(subdir)
+                    else:
+                        bad_dirs.append(os.path.basename(directory))
+                for filename in filenames:
+                    if not any(x in filename for x in bad_dirs):
+                        subfile=os.path.join(root,filename)
+                        if os.path.isfile(subfile):
+                            upload_dic[subfile]=subfol+subfile.split(full)[-1]
+        elif os.path.isfile(full):
+            upload_dic[full]=upload_folder+"/"+os.path.basename(full)
+
+    subfolders=list(set(subfolders))
+    subfolders=[ xx for xx in subfolders if len(xx) > 0 ]
+    subfolders.sort()
+
+    return upload_dic, subfolders
+
 def get_ownCloud_links(link_info, http):
     from urllib.parse import quote
     path = link_info.get("path", "").lstrip("/")
@@ -90,7 +171,7 @@ def get_owncloud_base_folder(configdic,project_name,getfolder=None,pick_a_date=N
 
     return base_destination
 
-def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None,scripts=None,issue=None, subfolder=None, pick_a_date=None):
+def ownCloud_upload(input_files=None,input_list=None,message=None,gitssh=None,days_to_share=None,scripts=None,issue=None, subfolder=None, pick_a_date=None):
 
     if type(message) == list:
         message=[ str(xx) for xx in message ]
@@ -114,6 +195,13 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
     local_path=os.path.abspath(configdic["local_path"])
     automation_path=os.path.abspath(configdic["automation_path"])
     code_path=os.path.abspath(configdic["code_path"])
+
+    if input_files is None:
+        input_files=[]
+    upload_entries=None
+    if input_list:
+        upload_entries=read_upload_list(input_list)
+        input_files=[ entry[1] for entry in upload_entries ]
 
     # check if files all come from the same project folder
     parent_folder=[]
@@ -143,7 +231,10 @@ def ownCloud_upload(input_files=None,message=None,gitssh=None,days_to_share=None
 
     base_destination=get_owncloud_base_folder(configdic,target_project, subfolder=subfolder, pick_a_date=pick_a_date)
 
-    upload_dic, subfolders=list_upload(base_destination,input_files)
+    if upload_entries:
+        upload_dic, subfolders=list_upload_from_entries(base_destination,upload_entries)
+    else:
+        upload_dic, subfolders=list_upload(base_destination,input_files)
 
     # login to owncloud/nextcloud
     try:
